@@ -7,6 +7,8 @@ import math #Math module
 import os #OS module
 import sys #SYS module
 import roman
+import noise
+import random
 
 title_screen_mode = 'normal'
 
@@ -207,9 +209,6 @@ def SpeedrunTimer(display, PlayTime): #Speedrun Timer Function
                 MSecondTime = f"00{int(MSecondTime)}"
             speedrun_time = HourTime + ":" + MinuteTime + ":" + SecondTime + '.' + MSecondTime  # Current in-game time
         display.blit(font.render(speedrun_time, True, (0, 0, 0), (255, 255, 255)), (504 - (13 * len(speedrun_time)), 0)) #Render Speedrun Timer
-
-import noise
-import random
 
 '''World Generation Classes and Functions'''
 
@@ -1929,14 +1928,14 @@ class Screen:
             display.blit(font.render(self.foretext + self.typingText, True, (255, 255, 255)), (x, y + height - 15))
             self.timer += 1
 
-# Hotbar Outline
+# Hotbar Slot Outline
 class HotbarSlotOutline:
     def __init__(self, colour, rect, width):
         self.colour = colour
         self.rect = rect
         self.width = width
 
-# Hotbar
+# Player Hotbar
 class Hotbar:
     def __init__(self):
         self.__hotbar_slots = [(InfoBar(slot, 7+82*i, 667), HotbarSlotOutline((83, 83, 83), pygame.Rect((7+82*i, 667), (82, 82)), 2)) for i in range(9)]
@@ -1987,6 +1986,7 @@ class Hotbar:
         for i in pygame_number_text:
             display.blit(i.surface, (i.x, i.y))
 
+# Player Health Bar
 class HealthBar:
     def __init__(self):
         self.__health_bar = [InfoBar(full_heart, 7+i*35, 592) for i in range(10)]
@@ -2007,6 +2007,7 @@ class HealthBar:
         for i in self.__health_bar:
             display.blit(i.img, (i.x, i.y))
 
+# Player Hunger Bar
 class HungerBar:
     def __init__(self):
         self.__hunger_bar = [InfoBar(full_hunger, 715-i*35, 592) for i in range(10)]
@@ -2027,13 +2028,37 @@ class HungerBar:
         for i in self.__hunger_bar:
             display.blit(i.img, (i.x, i.y))
 
-class Inventory:
+# General Item Collection (Inventory, Crafting Grid, Smelting Interface, Enchanting Interface, Grindstone Interface)
+class ItemCollection:
+    def __init__(self, size):
+        self._collection = [None]*size
+
+# Player Inventory
+class Inventory(ItemCollection):
     def __init__(self):
-        self.__inventory = [None]*36
-
-
-        
-
+        super().__init__(36)
+    
+    def add_item(self, item):  # add items to inventory
+        global screen
+        try:
+            if item.stackNum == 1:
+                while item.number > 0:
+                    self._collection[self._collection.index(None)] = Item(item.name, 1, item.enchantments, item.durability)
+                    item.number -= 1
+            elif item.stackNum == 64:
+                while item.number > 0:
+                    for i, itm in enumerate(self._collection):
+                        if itm is not None:
+                            if itm.name == item.name and itm.number < 64:
+                                idx, existing_num = i, itm.number
+                                break
+                    else:
+                        idx, existing_num = self._collection.index(None), 0
+                    amount = total if (total := item.number + existing_num) < 64 else 64
+                    self._collection[idx] = Item(item.name, amount, item.enchantments, item.durability)
+                    item.number -= amount - existing_num
+        except ValueError:
+            screen.print("Your inventory is full!")
 
 #Player Class and Methods
 class Player:
@@ -3922,51 +3947,25 @@ def Enchant3():  # Third ENCHANTING BOX (ENCHANTS start at LEVEL 0, MAX 5, extra
 
 #add items to inventory
 def inventory_add(item):
-    global base_index, additional_index, count, none_index, inventory_full
-    
-    if None not in player.inventory_list:  # test for full inventory
-        screen.print("Your inventory is nearly full or is already full. New items added may be lost.")
-
-    # Add items to inventory and combine into singular stacks (if stackable)
-    if item is not None:
-        if item.stackNum == 64:
-            for j in range(len(player.inventory_list)):
-                if player.inventory_list[j] is not None:
-                    if item.name == player.inventory_list[j].name and player.inventory_list[j].number < 64:
-                        player.inventory_list[j] = Item(player.inventory_list[j].name, item.number + player.inventory_list[j].number, player.inventory_list[j].enchantments, player.inventory_list[j].durability) #Add values
-                        break
-            else:
-                for j in range(len(player.inventory_list)):
-                    if player.inventory_list[j] is None:
-                        player.inventory_list[j] = item
-                        break
-        elif item.stackNum == 1:
-            for j in range(len(player.inventory_list)):
-                if player.inventory_list[j] is None:
-                    player.inventory_list[j] = item
-                    break
-
-    # Separate Items into stacks (Armour = Stack of 1), (Item = Stack of 64)
-    for i in range(len(player.inventory_list)):
-        if player.inventory_list[i] is not None:
-            if player.inventory_list[i].stackNum == 1 and player.inventory_list[i].number > 1:  # Armour
-                count = 0
-                while count < player.inventory_list[i].number:  # Separate into individual items
-                    if None in player.inventory_list:
-                        none_index = player.inventory_list.index(None)
-                        player.inventory_list[none_index] = Item(player.inventory_list[i].name, 1, player.inventory_list[i].enchantments, player.inventory_list[i].durability)
-                    count += 1
-                player.inventory_list[i] = None
-            elif player.inventory_list[i].stackNum == 64 and player.inventory_list[i].number > 64:  # Item
-                while player.inventory_list[i].number > 64:  # Separate into stacks of 64
-                    player.inventory_list[i].number -= 64
-                    if None in player.inventory_list:
-                        none_index = player.inventory_list.index(None)
-                        player.inventory_list[none_index] = Item(player.inventory_list[i].name, 64, player.inventory_list[i].enchantments, player.inventory_list[i].durability)
-                if None in player.inventory_list:  # Remainder (Less than 64)
-                    none_index = player.inventory_list.index(None)
-                    player.inventory_list[none_index] = Item(player.inventory_list[i].name, player.inventory_list[i].number, player.inventory_list[i].enchantments, player.inventory_list[i].durability)
-                    player.inventory_list[i] = None
+    try:
+        if item.stackNum == 1:
+            while item.number > 0:
+                player.inventory_list[player.inventory_list.index(None)] = Item(item.name, 1, item.enchantments, item.durability)
+                item.number -= 1
+        elif item.stackNum == 64:
+            while item.number > 0:
+                for i, itm in enumerate(player.inventory_list):
+                    if itm is not None:
+                        if itm.name == item.name and itm.number < 64:
+                            idx, existing_num = i, itm.number
+                            break
+                else:
+                    idx, existing_num = player.inventory_list.index(None), 0
+                amount = total if (total := item.number + existing_num) < 64 else 64
+                player.inventory_list[idx] = Item(item.name, amount, item.enchantments, item.durability)
+                item.number -= amount - existing_num
+    except ValueError:
+        screen.print("Your inventory is full!")
 
 # Render Inventory List to Image and Number List
 def image_render():
