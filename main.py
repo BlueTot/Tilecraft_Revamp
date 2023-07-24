@@ -3978,38 +3978,13 @@ def image_render():
 
     '''Inventory Section'''
 
-    # Remove Values with 0
-    for i in range(len(player.inventory_list)):
-        if player.inventory_list[i] is not None:
-            if player.inventory_list[i].number == 0:
-                player.inventory_list[i] = None
-
     # Create images list and number list
-    for i in player.inventory_list:
-        if i is None:  # Set White Background for NONE Slots
-            player.image_list.append(none_img)
-            player.number_list.append('')
-        else:
-            player.image_list.append(i.img)
-            player.number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.inventory_list)):
-        if player.inventory_list[i] is not None:
-            if player.inventory_list[i].number == 1:
-                player.number_list[i] = ''
+    player.image_list = [none_img if item is None else item.img for item in player.inventory_list]
+    player.number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in player.inventory_list]
 
     #Create Holding Item for Inventory
-    if player.holding_item is None:
-        player.holding_item_image = none_img
-        player.holding_item_number = ''
-    else:
-        player.holding_item_image = player.holding_item.img
-        player.holding_item_number = str(player.holding_item.number)
-
-    if player.holding_item is not None:
-        if player.holding_item.number == 1:
-            player.holding_item_number = ''
+    player.holding_item_image = none_img if player.holding_item is None else player.holding_item.img
+    player.holding_item_number = "" if (player.holding_item is None or player.holding_item.number == 1) else str(player.holding_item.number)
 
     '''Armour Section'''
 
