@@ -10,7 +10,15 @@ import roman
 import noise
 import random
 
+pygame.init()
+
 title_screen_mode = 'normal'
+
+class Fonts:
+
+    @staticmethod
+    def MinecraftFont(size):
+        return pygame.font.Font("images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf", size)
 
 '''Cheats Datapack Section'''
 
@@ -185,7 +193,7 @@ def MusicPlayer(advancements):
 
 def SpeedrunTimer(display, PlayTime): #Speedrun Timer Function
     global speedrun_time, TimerRunning
-    font = pygame.font.Font('images_vB1_0_pre3/monofur/monof55.ttf', 25)
+    font = pygame.font.Font('images_v2023_revamp/monofur/monof55.ttf', 25)
     if load == 'Music Player' or load == 'God Gear':
         if TimerRunning:
             if PlayTime // 3600 >= 10:  # HOURS 2 digits
@@ -701,8 +709,6 @@ class TilecraftWorld:
                 for i in self.render_list:
                     if i not in self.UndergroundGeneratedList:
                         self.UndergroundUnderTiles, self.UndergroundTiles = UndergroundGenerate(self.seed, i[0], i[1], self.UndergroundUnderTiles, self.UndergroundTiles, self.UndergroundGeneratedList)
-        elif player.dimension == 'Nether':
-            pass
             
     #Calculate Render List Per Frame
     def render_chunks(self, left, right, top, bottom):
@@ -857,7 +863,7 @@ class Button:
         self.rect = pygame.Rect((x, y), (length, width))
 
     def render(self, display, text, size):
-        self.font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', size)
+        self.font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', size)
         self.text = self.font.render(text, False, (0, 0, 0))
         pygame.draw.rect(display, self.colour, self.rect)
         pygame.draw.rect(display, (255, 255, 255), self.rect, 3)
@@ -894,17 +900,16 @@ def InventoryGrid(display):
 
     image_render()
     inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, player.image_list[i]) for i in range(36)]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    numbers = [Text(font.render(player.number_list[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
+    numbers = [Text(Fonts.MinecraftFont(25).render(player.number_list[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
     
     for i in range(len(inventory_slots)):
         display.blit(inventory_slots[i].img, (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
         pygame.draw.rect(display, inventory_slots[i].colour, inventory_slots[i].rect, inventory_slots[i].width)
-        if player.inventory_list[i] is not None:
-            if player.inventory_list[i].enchantments is not None:
-                display.blit(TC_GLINTS[player.inventory_list[i].name], (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
-            if player.inventory_list[i].durability is not None:
-                RenderDurabilityBar(display, inventory_slots[i].rect.x, inventory_slots[i].rect.y, player.inventory_list[i].durability, player.inventory_list[i].max_durability)
+        if player.inventory.inventory_list[i] is not None:
+            if player.inventory.inventory_list[i].enchantments is not None:
+                display.blit(TC_GLINTS[player.inventory.inventory_list[i].name], (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
+            if player.inventory.inventory_list[i].durability is not None:
+                RenderDurabilityBar(display, inventory_slots[i].rect.x, inventory_slots[i].rect.y, player.inventory.inventory_list[i].durability, player.inventory.inventory_list[i].max_durability)
     for i in numbers:
         display.blit(i.surface, (i.x, i.y))
 
@@ -946,8 +951,8 @@ def SmallCraftGrid(display):
         Grid((83, 83, 83), pygame.Rect((472, 157), (82, 82)), 2, player.craft_image_list[3]),
         Grid((83, 83, 83), pygame.Rect((637, 117), (82, 82)), 2, player.craft_image_list[4]),
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    arrow_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftBold-nMK1.otf', 36)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 36)
     crafting_numbers = [
         Text(font.render(player.craft_number_list[0], False, (255, 255, 255)), 442, 127),
         Text(font.render(player.craft_number_list[1], False, (255, 255, 255)), 525, 127),
@@ -982,9 +987,9 @@ def CraftGrid(display):
         Grid((83, 83, 83), pygame.Rect((359, 239), (82, 82)), 2, player.grid_image_list[8]),
         Grid((83, 83, 83), pygame.Rect((570, 157), (82, 82)), 2, player.grid_image_list[9])
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    title_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
-    arrow_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftBold-nMK1.otf', 40)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    title_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
+    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 40)
     crafting_numbers = [
         Text(font.render(player.grid_number_list[0], False, (255, 255, 255)), 247, 127),
         Text(font.render(player.grid_number_list[1], False, (255, 255, 255)), 329, 127),
@@ -1019,10 +1024,10 @@ def FurnaceInterface(display):
         Grid((83, 83, 83), pygame.Rect((225, 262), (82, 82)), 2, player.smelt_image_list[1]),
         Grid((83, 83, 83), pygame.Rect((450, 172), (82, 82)), 2, player.smelt_image_list[2]),
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    side_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 36)
-    title_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
-    arrow_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftBold-nMK1.otf', 45)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    side_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 36)
+    title_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
+    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 45)
     smelting_numbers = [
         Text(font.render(player.smelt_number_list[0], False, (255, 255, 255)), 277, 120),
         Text(font.render(player.smelt_number_list[1], False, (255, 255, 255)), 277, 315),
@@ -1053,7 +1058,7 @@ def EnchantingInterface(display):
         Grid((83, 83, 83), pygame.Rect((112, 225), (82, 82)), 2, player.enchanting_image_list[1]),
         Grid((83, 83, 83), pygame.Rect((30, 142), (82, 82)), 2, player.enchanting_image_list[2])
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
     enchanting_numbers = [
         Text(font.render(str(player.enchanting_number_list[0]), False, (255, 255, 255)), 82, 277),
         Text(font.render(str(player.enchanting_number_list[1]), False, (255, 255, 255)), 165, 277),
@@ -1082,10 +1087,10 @@ def CompressorInterface(display):
         Grid((83, 83, 83), pygame.Rect((225, 142), (82, 82)), 2, player.compressor_image_list[0]),
         Grid((83, 83, 83), pygame.Rect((450, 142), (82, 82)), 2, player.compressor_image_list[1])
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    title_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
-    arrow_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftBold-nMK1.otf', 45)
-    side_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 36)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    title_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
+    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 45)
+    side_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 36)
     compressor_numbers = [
         Text(font.render(player.compressor_number_list[0], False, (255, 255, 255)), 277, 195),
         Text(font.render(player.compressor_number_list[1], False, (255, 255, 255)), 502, 195)
@@ -1112,9 +1117,9 @@ def GrindstoneInterface(display):
         Grid((83, 83, 83), pygame.Rect((225, 177), (82, 82)), 2, player.grindstone_image_list[1]),
         Grid((83, 83, 83), pygame.Rect((475, 133), (82, 82)), 2, player.grindstone_image_list[2])
     ]
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    title_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 35)
-    arrow_font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftBold-nMK1.otf', 45)
+    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+    title_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 35)
+    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 45)
     grindstone_numbers = [
         Text(font.render(player.grindstone_number_list[0], False, (255, 255, 255)), 277, 139),
         Text(font.render(player.grindstone_number_list[1], False, (255, 255, 255)), 277, 229),
@@ -1135,11 +1140,6 @@ def GrindstoneInterface(display):
     pygame.draw.rect(display, (0, 0, 0), (185, 97, 30, 194), 2)
     pygame.draw.rect(display, (0, 0, 0), (317, 97, 30, 194), 2)
     display.blit(arrow_font.render('-->', False, (0, 0, 0)), (367, 152))  # Render Arrow
-
-def hotbar_identify():
-    global selected_hotbar, hotbar_item, hotbar_index, player
-    hotbar_index = hotbar_order.index(player.selected_hotbar)
-    player.hotbar_item = player.inventory_list[hotbar_index + 27]
 
 def SetHotbarProperties(n):
     global player
@@ -1205,18 +1205,18 @@ def Main():
                                     if player.hotbar_item.itemType == "Food":
                                         if player.hunger < 20:
                                             if player.hotbar_item.name == 'Bread':
-                                                index = player.inventory_list.index(player.hotbar_item)
-                                                player.inventory_list[index].number -= 1
+                                                index = player.inventory.inventory_list.index(player.hotbar_item)
+                                                player.inventory.inventory_list[index].number -= 1
                                                 player.hunger += 5
                                             # GOLDEN CARROT
                                             elif player.hotbar_item.name == 'Golden Carrot':
-                                                index = player.inventory_list.index(player.hotbar_item)
-                                                player.inventory_list[index].number -= 1
+                                                index = player.inventory.inventory_list.index(player.hotbar_item)
+                                                player.inventory.inventory_list[index].number -= 1
                                                 player.hunger += 6
                                             # GOLDEN APPLE
                                             elif player.hotbar_item.name == 'Golden Apple':
-                                                index = player.inventory_list.index(player.hotbar_item)
-                                                player.inventory_list[index].number -= 1
+                                                index = player.inventory.inventory_list.index(player.hotbar_item)
+                                                player.inventory.inventory_list[index].number -= 1
                                                 player.hunger += 5
                                                 player.regenerate_start_time = 0
                                                 player.regenerate_val = True
@@ -1230,7 +1230,7 @@ def Main():
                             if event.key in (numkeys := [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, 
                                                        pygame.K_5, pygame.K_6, pygame.K_7, pygame.K_8, pygame.K_9]):
                                 SetHotbarProperties(idx := numkeys.index(event.key))
-                                player.selected_hotbar = f"Hotbar{idx+1}"
+                                player.selected_hotbar = idx
                             if event.key == pygame.K_0:
                                 player.debug_menu = not player.debug_menu
                             if event.key == pygame.K_a:  # Turn Left
@@ -1299,10 +1299,10 @@ def Main():
                 World.generate_chunks()  # Generate Chunks that are loaded but have not been generated before
                 World.render(world)  # Render all world blocks to world
                 RemoveItem() #Remove Items if their number is 0
-                hotbar_identify() #Update hotbar item
+                player.hotbar_item = player.inventory.get_hotbar_item(player.selected_hotbar) #Update hotbar item
                 player.render(world)  # Render player and player accessories to world
                 SpeedrunTimer(world, PlayTime)
-                advancements_update(player.advancements, player.inventory_list, player.armour_list, player.dimension)  # Update Advancements
+                advancements_update(player.advancements, player.inventory.inventory_list, player.armour_list, player.dimension)  # Update Advancements
                 screen.render(world) #Render Text Screen
 
             elif player.mode == 'inventory':
@@ -1324,12 +1324,12 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world) #Render Inventory Grid
+                player.inventory.render(world) #Render Inventory Grid
                 ArmourGrid(world) #Render Armour Grid for Player
                 SmallCraftGrid(world) #Render Small Crafting Grid
                 Crafting() #Update Small 2x2 Crafting Grid
                 RemoveItem() #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world) #Render the item the user is holding
+                player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'crafting':
@@ -1351,11 +1351,11 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world) #Render Inventory Grid
+                player.inventory.render(world) #Render Inventory Grid
                 CraftGrid(world) #Render 3x3 Crafting Grid
                 GridCraft()  #Update 3x3 Crafting Grid
                 RemoveItem()  #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world)  # Render the item the user is holding
+                player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'smelting':
@@ -1377,11 +1377,11 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world) #Render Inventory Grid
+                player.inventory.render(world) #Render Inventory Grid
                 FurnaceInterface(world) #Render Furnace Interface
                 player.smelt() #Furnace Smelting
                 RemoveItem()  #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world)  # Render the item the user is holding
+                player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'enchanting':
@@ -1403,10 +1403,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world)  # Render Inventory Grid
+                player.inventory.render(world)  # Render Inventory Grid
                 EnchantingInterface(world) #Render Enchanting Table Interface
                 RemoveItem()  #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world)  # Render the item the user is holding
+                player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'compressing':
@@ -1428,11 +1428,11 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world) #Render Inventory Grid
+                player.inventory.render(world) #Render Inventory Grid
                 CompressorInterface(world) #Render Compressor Interface
                 player.compress() #Compressing Process
                 RemoveItem() #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world) #Render the item the user is holding
+                player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'repairing and disenchanting':
@@ -1454,11 +1454,11 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                InventoryGrid(world) #Render Inventory Grid
+                player.inventory.render(world) #Render Inventory Grid
                 GrindstoneInterface(world) #Render Grindstone Interface
                 player.repair_and_disenchant() #Update repaired/disenchanted item
                 RemoveItem() #Remove all items with number of 0 or durability of 0
-                RenderHoldingItem(world) #Render the item the user is holding
+                player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             display.blit(world, (0, 0))  # Render map to display
@@ -1468,7 +1468,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
+            font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
             display.blit(font.render("Generating Overworld", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             IntialiseDetails()
@@ -1477,7 +1477,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
+            font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
             display.blit(font.render("Generating Underground", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             World.undergroundGenerated = True
@@ -1486,7 +1486,7 @@ def Main():
             hasGeneratedUnderground = "Generated"
         if not pygame.mixer.music.get_busy():
             if RandomNum(1, 500) == 1:
-                pygame.mixer.music.load("images_vB1_0_pre3/music/song" + str(random.choice([3, 5, 7, 11, 12, 13, 14, 18])) + ".mp3")
+                pygame.mixer.music.load("images_v2023_revamp/music/song" + str(random.choice([3, 5, 7, 11, 12, 13, 14, 18])) + ".mp3")
                 pygame.mixer.music.play()
 
 
@@ -1494,14 +1494,13 @@ def Main():
 def RenderHoldingItem(display):
     global TC_GLINTS
     x, y = pygame.mouse.get_pos()
-    font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    if player.holding_item is not None:
-        display.blit(player.holding_item_image, (x, y))
-        display.blit(font.render(player.holding_item_number, False, (255, 255, 255)), (x + 52, y + 52))
-        if player.holding_item.enchantments is not None:
-            display.blit(TC_GLINTS[player.holding_item.name], (x, y))
-        if player.holding_item.durability is not None:
-            RenderDurabilityBar(display, x, y, player.holding_item.durability, player.holding_item.max_durability)
+    if player.inventory.holding_item is not None:
+        display.blit(player.inventory.holding_item_image, (x, y))
+        display.blit(Fonts.MinecraftFont(25).render(player.inventory.holding_item_number, False, (255, 255, 255)), (x + 52, y + 52))
+        if player.inventory.holding_item.enchantments is not None:
+            display.blit(TC_GLINTS[player.inventory.holding_item.name], (x, y))
+        if player.inventory.holding_item.durability is not None:
+            RenderDurabilityBar(display, x, y, player.inventory.holding_item.durability, player.inventory.holding_item.max_durability)
 
 #Convert Numbers to Roman Numerals
 def DecimalToRoman(num):
@@ -1543,10 +1542,10 @@ def TextBox(List, x, y, font, box, display):
 #Render the Item Label for the Item that the User is Hovering Over
 def RenderHoveringItem(display, Type, box):
     x, y = pygame.mouse.get_pos()
-    font = pygame.font.Font('images_vB1_0_pre3/monofur/monof55.ttf', 22)
+    font = pygame.font.Font('images_v2023_revamp/monofur/monof55.ttf', 22)
     if box is not None:
         if Type == 'inventory grid': #Within 36 Inventory Slots
-            TextBox(player.inventory_list, x, y, font, box, display)
+            TextBox(player.inventory.inventory_list, x, y, font, box, display)
         elif Type == 'armour grid': #Within Armour Grid
             TextBox(player.armour_list, x, y, font, box, display)
         elif Type == 'small crafting grid' or Type == 'small crafting grid item': #2x2 Crafting
@@ -1642,99 +1641,99 @@ def ClickItem(Type, box):
     global small_crafting_grid
     if Type is not None and box is not None:
         if Type == 'inventory grid': #Inventory Grid and Hotbar
-            if player.holding_item is not None and player.inventory_list[box] is not None:
-                if player.holding_item.name == player.inventory_list[box].name and (player.inventory_list[box].number + player.holding_item.number <= player.holding_item.stackNum): #Items can be combined
-                    player.inventory_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.inventory.inventory_list[box] is not None:
+                if player.inventory.holding_item.name == player.inventory.inventory_list[box].name and (player.inventory.inventory_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum): #Items can be combined
+                    player.inventory.inventory_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.inventory_list[box] = player.inventory_list[box], player.holding_item
+                    player.inventory.holding_item, player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.inventory_list[box] = player.inventory_list[box], player.holding_item
+                player.inventory.holding_item, player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.holding_item
         elif Type == 'armour grid': #Armour Grid
             if box == 0: #Tier 1
-                if player.holding_item is not None and player.armour_list[box] is None:
-                    if player.holding_item.itemType == 'Tier1':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is None and player.armour_list[box] is not None:
-                    player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is not None and player.armour_list[box] is not None:
-                    if player.holding_item.itemType == 'Tier1' and player.armour_list[box].itemType == 'Tier1':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
+                if player.inventory.holding_item is not None and player.armour_list[box] is None:
+                    if player.inventory.holding_item.itemType == 'Tier1':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
+                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
+                    if player.inventory.holding_item.itemType == 'Tier1' and player.armour_list[box].itemType == 'Tier1':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
             elif box == 1: #Tier 2
-                if player.holding_item is not None and player.armour_list[box] is None:
-                    if player.holding_item.itemType == 'Tier2':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is None and player.armour_list[box] is not None:
-                    player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is not None and player.armour_list[box] is not None:
-                    if player.holding_item.itemType == 'Tier2' and player.armour_list[box].itemType == 'Tier2':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
+                if player.inventory.holding_item is not None and player.armour_list[box] is None:
+                    if player.inventory.holding_item.itemType == 'Tier2':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
+                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
+                    if player.inventory.holding_item.itemType == 'Tier2' and player.armour_list[box].itemType == 'Tier2':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
             elif box == 2: #Tier 3
-                if player.holding_item is not None and player.armour_list[box] is None:
-                    if player.holding_item.itemType == 'Tier3':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is None and player.armour_list[box] is not None:
-                    player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is not None and player.armour_list[box] is not None:
-                    if player.holding_item.itemType == 'Tier3' and player.armour_list[box].itemType == 'Tier3':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
+                if player.inventory.holding_item is not None and player.armour_list[box] is None:
+                    if player.inventory.holding_item.itemType == 'Tier3':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
+                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
+                    if player.inventory.holding_item.itemType == 'Tier3' and player.armour_list[box].itemType == 'Tier3':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
             elif box == 3: #Shield
-                if player.holding_item is not None and player.armour_list[box] is None:
-                    if player.holding_item.itemType == 'Shield':
-                        player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
-                elif player.holding_item is None and player.armour_list[box] is not None:
-                    player.holding_item, player.armour_list[box] = player.armour_list[box], player.holding_item
+                if player.inventory.holding_item is not None and player.armour_list[box] is None:
+                    if player.inventory.holding_item.itemType == 'Shield':
+                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
+                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
-            if player.holding_item is not None and player.craft_list[box] is not None: #Items can be combined
-                if player.holding_item.name == player.craft_list[box].name and (player.craft_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.craft_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.craft_list[box] is not None: #Items can be combined
+                if player.inventory.holding_item.name == player.craft_list[box].name and (player.craft_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.craft_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.craft_list[box] = player.craft_list[box], player.holding_item
+                    player.inventory.holding_item, player.craft_list[box] = player.craft_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.craft_list[box] = player.craft_list[box], player.holding_item
+                player.inventory.holding_item, player.craft_list[box] = player.craft_list[box], player.inventory.holding_item
         elif Type == 'small crafting grid item': #Collecting the Item Crafted from 2x2 Crafting Grid
             if player.craft_list[4] is not None:
-                inventory_add(player.craft_list[4])
+                player.inventory.add_item(player.craft_list[4])
                 for i in range(4):
                     if player.craft_list[i] is not None:
                         player.craft_list[i].number -= 1
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
-            if player.holding_item is not None and player.grid_list[box] is not None: #Items can be combined
-                if player.holding_item.name == player.grid_list[box].name and (player.grid_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.grid_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.grid_list[box] is not None: #Items can be combined
+                if player.inventory.holding_item.name == player.grid_list[box].name and (player.grid_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.grid_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.grid_list[box] = player.grid_list[box], player.holding_item
+                    player.inventory.holding_item, player.grid_list[box] = player.grid_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.grid_list[box] = player.grid_list[box], player.holding_item
+                player.inventory.holding_item, player.grid_list[box] = player.grid_list[box], player.inventory.holding_item
         elif Type == 'crafting grid item': #Collecting the Item Crafted from 3x3 Crafting Grid
             if player.grid_list[9] is not None:
-                inventory_add(player.grid_list[9])
+                player.inventory.add_item(player.grid_list[9])
                 for i in range(9):
                     if player.grid_list[i] is not None:
                         player.grid_list[i].number -= 1
         elif Type == 'smelting':
-            if player.holding_item is not None and player.smelting_list[box] is not None: #Items can be combined
-                if player.holding_item.name == player.smelting_list[box].name and (player.smelting_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.smelting_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.smelting_list[box] is not None: #Items can be combined
+                if player.inventory.holding_item.name == player.smelting_list[box].name and (player.smelting_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.smelting_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.smelting_list[box] = player.smelting_list[box], player.holding_item
+                    player.inventory.holding_item, player.smelting_list[box] = player.smelting_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.smelting_list[box] = player.smelting_list[box], player.holding_item
+                player.inventory.holding_item, player.smelting_list[box] = player.smelting_list[box], player.inventory.holding_item
         elif Type == 'smelting item': #Collecting the Item Smelted from Furnace
-            inventory_add(player.smelting_list[2])
+            player.inventory.add_item(player.smelting_list[2])
             player.smelting_list[2] = None
         elif Type == 'enchanting':
-            if player.holding_item is not None and player.enchanting_list[box] is not None: #Items can be combined
-                if player.holding_item.name == player.enchanting_list[box].name and (player.enchanting_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.enchanting_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.enchanting_list[box] is not None: #Items can be combined
+                if player.inventory.holding_item.name == player.enchanting_list[box].name and (player.enchanting_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.enchanting_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.holding_item
+                    player.inventory.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.holding_item
+                player.inventory.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.inventory.holding_item
             if box == 0:
                 EnchantSet()
         elif Type == 'upgrade':
@@ -1746,28 +1745,28 @@ def ClickItem(Type, box):
         elif Type == 'option3':
             Enchant3()
         elif Type == 'compressing':
-            if player.holding_item is not None and player.compressor_list[box] is not None: #Items can be combined
-                if player.holding_item.name == player.compressor_list[box].name and (player.compressor_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.compressor_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.compressor_list[box] is not None: #Items can be combined
+                if player.inventory.holding_item.name == player.compressor_list[box].name and (player.compressor_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.compressor_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.compressor_list[box] = player.compressor_list[box], player.holding_item
+                    player.inventory.holding_item, player.compressor_list[box] = player.compressor_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.compressor_list[box] = player.compressor_list[box], player.holding_item
+                player.inventory.holding_item, player.compressor_list[box] = player.compressor_list[box], player.inventory.holding_item
         elif Type == 'compressing item':
-            inventory_add(player.compressor_list[1])
+            player.inventory.add_item(player.compressor_list[1])
             player.compressor_list[1] = None
         elif Type == 'repairing and disenchanting':
-            if player.holding_item is not None and player.grindstone_list[box] is not None:  # Items can be combined
-                if player.holding_item.name == player.grindstone_list[box].name and (player.grindstone_list[box].number + player.holding_item.number <= player.holding_item.stackNum):
-                    player.grindstone_list[box].number += player.holding_item.number
-                    player.holding_item = None
+            if player.inventory.holding_item is not None and player.grindstone_list[box] is not None:  # Items can be combined
+                if player.inventory.holding_item.name == player.grindstone_list[box].name and (player.grindstone_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
+                    player.grindstone_list[box].number += player.inventory.holding_item.number
+                    player.inventory.holding_item = None
                 else:
-                    player.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.holding_item
+                    player.inventory.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.inventory.holding_item
             else:
-                player.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.holding_item
+                player.inventory.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.inventory.holding_item
         elif Type == 'repairing and disenchanting item':
-            inventory_add(player.grindstone_list[2])
+            player.inventory.add_item(player.grindstone_list[2])
             if player.grindstone_list[0] is not None and player.grindstone_list[1] is None:
                 if player.grindstone_list[0].enchantments is not None:
                     player.disenchant()
@@ -1777,60 +1776,60 @@ def ClickItem(Type, box):
 def SwitchToHotbar(Type, box, key_pressed):
     if Type is not None and box is not None:
         if Type == 'inventory grid':
-            player.inventory_list[key_pressed + 26], player.inventory_list[box] = player.inventory_list[box], player.inventory_list[key_pressed + 26]
+            player.inventory.inventory_list[key_pressed + 26], player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.inventory_list[key_pressed + 26]
 
 #Right Click - Drop Item / Separate Item into two different stacks
 def DropItem(Type, box):
-    if Type is not None and box is not None and player.holding_item is not None:
+    if Type is not None and box is not None and player.inventory.holding_item is not None:
         if Type == 'inventory grid': #Inventory Grid
-            if player.inventory_list[box] is None:
-                player.inventory_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.inventory_list[box] is not None and player.inventory_list[box].name == player.holding_item.name and (player.inventory_list[box].number + 1 <= player.inventory_list[box].stackNum):
-                player.inventory_list[box].number += 1
-                player.holding_item.number -= 1
+            if player.inventory.inventory_list[box] is None:
+                player.inventory.inventory_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.inventory.inventory_list[box] is not None and player.inventory.inventory_list[box].name == player.inventory.holding_item.name and (player.inventory.inventory_list[box].number + 1 <= player.inventory.inventory_list[box].stackNum):
+                player.inventory.inventory_list[box].number += 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
             if player.craft_list[box] is None:
-                player.craft_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.craft_list[box] is not None and player.craft_list[box].name == player.holding_item.name and (player.craft_list[box].number + 1 <= player.craft_list[box].stackNum):
+                player.craft_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.craft_list[box] is not None and player.craft_list[box].name == player.inventory.holding_item.name and (player.craft_list[box].number + 1 <= player.craft_list[box].stackNum):
                 player.craft_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
             if player.grid_list[box] is None:
-                player.grid_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.grid_list[box] is not None and player.grid_list[box].name == player.holding_item.name and (player.grid_list[box].number + 1 <= player.grid_list[box].stackNum):
+                player.grid_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.grid_list[box] is not None and player.grid_list[box].name == player.inventory.holding_item.name and (player.grid_list[box].number + 1 <= player.grid_list[box].stackNum):
                 player.grid_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'smelting': #Furnace Interface
             if player.smelting_list[box] is None:
-                player.smelting_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.smelting_list[box] is not None and player.smelting_list[box].name == player.holding_item.name and (player.smelting_list[box].number + 1 <= player.smelting_list[box].stackNum):
+                player.smelting_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.smelting_list[box] is not None and player.smelting_list[box].name == player.inventory.holding_item.name and (player.smelting_list[box].number + 1 <= player.smelting_list[box].stackNum):
                 player.smelting_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'enchanting': #Enchanting Table Interface
             if player.enchanting_list[box] is None:
-                player.enchanting_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.enchanting_list[box] is not None and player.enchanting_list[box].name == player.holding_item.name and (player.enchanting_list[box].number + 1 <= player.enchanting_list[box].stackNum):
+                player.enchanting_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.enchanting_list[box] is not None and player.enchanting_list[box].name == player.inventory.holding_item.name and (player.enchanting_list[box].number + 1 <= player.enchanting_list[box].stackNum):
                 player.enchanting_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'compressing': #Compressor Interface
             if player.compressor_list[box] is None:
-                player.compressor_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
-                player.holding_item.number -= 1
-            elif player.compressor_list[box] is not None and player.compressor_list[box].name == player.holding_item.name and (player.compressor_list[box].number + 1 <= player.compressor_list[box].stackNum):
+                player.compressor_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.inventory.holding_item.number -= 1
+            elif player.compressor_list[box] is not None and player.compressor_list[box].name == player.inventory.holding_item.name and (player.compressor_list[box].number + 1 <= player.compressor_list[box].stackNum):
                 player.compressor_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
         elif Type == 'repairing and disenchanting': #Grindstone Interface
             if player.grindstone_list[box] is None:
-                player.grindstone_list[box] = Item(player.holding_item.name, 1, player.holding_item.enchantments, player.holding_item.durability)
+                player.grindstone_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
                 player.grindstone.number -= 1
-            elif player.grindstone_list[box] is not None and player.grindstone_list[box].name == player.holding_item.name and (player.grindstone_list[box].number + 1 <= player.grindstone_list[box].stackNum):
+            elif player.grindstone_list[box] is not None and player.grindstone_list[box].name == player.inventory.holding_item.name and (player.grindstone_list[box].number + 1 <= player.grindstone_list[box].stackNum):
                 player.grindstone_list[box].number += 1
-                player.holding_item.number -= 1
+                player.inventory.holding_item.number -= 1
 
 class Screen:
     def __init__(self):
@@ -1862,21 +1861,21 @@ class Screen:
         self.typingText += char
 
     def stop_typing(self):
-        global screen, player, TC_ITEMS, hotbar_order
+        global screen, player, TC_ITEMS
         self.input_line = 0
         self.isTyping = False
         length = len(list(TC_ITEMS.keys())) - 1
         if self.foretext == f'Item ID (0 - {length}): ':
-            inventory_add(give(self.typingText))
+            player.inventory.add_item(give(self.typingText))
             self.foretext = ''
         elif self.foretext == 'Coordinates (X,Y): ':
             player.x, player.y = teleport(self.typingText)
             self.foretext = ''
         elif self.foretext == "Enchantment (Name, Lvl): ":
-            index = hotbar_order.index(player.selected_hotbar)
+            index = player.selected_hotbar
             item = enchant(self.typingText)
             if item is not None:
-                player.inventory_list[27 + index] = item
+                player.inventory.inventory_list[27 + index] = item
             self.foretext = ''
         elif self.foretext == "Experience Level: ":
             experience(self.typingText)
@@ -1922,7 +1921,7 @@ class Screen:
             surface.fill((125, 125, 125))
             surface.set_alpha(200)
             display.blit(surface, (x, y))
-            font = pygame.font.Font('images_vB1_0_pre3/monofur/monof55.ttf', 18)
+            font = pygame.font.Font('images_v2023_revamp/monofur/monof55.ttf', 18)
             for i in range(len(self.screen_list)):
                 display.blit(font.render(self.screen_list[i], False, (255, 255, 255)), (x, y + height - (i + 1) * 15 - self.input_line))
             display.blit(font.render(self.foretext + self.typingText, True, (255, 255, 255)), (x, y + height - 15))
@@ -1942,19 +1941,16 @@ class Hotbar:
         self.__hotbar_slots[0][1].colour = (255, 255, 255)
         self.__hotbar_slots[0][1].width = 3
     
-    def update_with_inventory(self, inventory, number_list):
+    def update_with_inventory(self, inventory):
+        number_list = [0]*9
         for i in range(27, 36):
             if inventory[i] is None:  # Set White Background for NONE Slots
                 self.__hotbar_slots[i - 27][0].img = slot
-                number_list[i] = ''
-            else:  # No Enchantments
+                number_list[i-27] = ''
+            else:
                 self.__hotbar_slots[i - 27][0].img = inventory[i].img
-                number_list[i] = str(inventory[i].number)
-                if number_list[i] == '1':
-                    number_list[i] = ''
-                if inventory[i].number == 0:
-                    inventory[i] = None
-        return inventory, number_list
+                number_list[i-27] = n if (n := str(inventory[i].number)) != "1" else ""
+        return number_list
 
     def set_selected_hotbar_properties(self, n):
         self.__hotbar_slots[n][1].colour = (255, 255, 255)
@@ -1964,7 +1960,9 @@ class Hotbar:
                 self.__hotbar_slots[i][1].colour = (83, 83, 83)
                 self.__hotbar_slots[i][1].width = 2
     
-    def render(self, display, inventory, number_list):
+    def render(self, display, inventory):
+
+        number_list = self.update_with_inventory(inventory)
 
         # draw hotbar
         for i in range(len(self.__hotbar_slots)):
@@ -1981,8 +1979,8 @@ class Hotbar:
             pygame.draw.rect(display, i[1].colour, i[1].rect, i[1].width)
         
         # draw hotbar numbers
-        font = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 24)
-        pygame_number_text = [Text(font.render(number_list[i+27], True, (255, 0, 0), (255, 255, 255)), 60+82*i, 720) for i in range(9)]
+        font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 24)
+        pygame_number_text = [Text(font.render(number_list[i], True, (255, 0, 0), (255, 255, 255)), 60+82*i, 720) for i in range(9)]
         for i in pygame_number_text:
             display.blit(i.surface, (i.x, i.y))
 
@@ -2032,18 +2030,45 @@ class HungerBar:
 class ItemCollection:
     def __init__(self, size):
         self._collection = [None]*size
+    
+    def _remove_null_items(self):
+        global player
+        for idx, item in enumerate(self._collection):
+            if item is not None:
+                if item.number <= 0:
+                    self._collection[idx] = None
+                elif item.durability is not None:
+                    if item.durability <= 0:
+                        self._collection[idx] = None
 
 # Player Inventory
 class Inventory(ItemCollection):
     def __init__(self):
         super().__init__(36)
+        self.holding_item = None
+    
+    @property
+    def inventory_list(self):
+        return self._collection
+
+    # weighted none index for inventory
+    def __weighted_none_index(self):
+        return ((self._collection[-9:] + self._collection[:27]).index(None) + 27) % 36
+
+    def __remove_null_holding_item(self):
+        if self.holding_item is not None:
+            if self.holding_item.number <= 0:
+                self.holding_item = None
+            elif self.holding_item.durability is not None:
+                if self.holding_item.durability <= 0:
+                    self.holding_item = None
     
     def add_item(self, item):  # add items to inventory
         global screen
         try:
             if item.stackNum == 1:
                 while item.number > 0:
-                    self._collection[self._collection.index(None)] = Item(item.name, 1, item.enchantments, item.durability)
+                    self._collection[self.__weighted_none_index()] = Item(item.name, 1, item.enchantments, item.durability)
                     item.number -= 1
             elif item.stackNum == 64:
                 while item.number > 0:
@@ -2053,12 +2078,56 @@ class Inventory(ItemCollection):
                                 idx, existing_num = i, itm.number
                                 break
                     else:
-                        idx, existing_num = self._collection.index(None), 0
+                        idx, existing_num = self.__weighted_none_index(), 0
                     amount = total if (total := item.number + existing_num) < 64 else 64
                     self._collection[idx] = Item(item.name, amount, item.enchantments, item.durability)
                     item.number -= amount - existing_num
         except ValueError:
             screen.print("Your inventory is full!")
+        self._remove_null_items()
+    
+    def get_hotbar_item(self, selected_hotbar):
+        return self._collection[27 + selected_hotbar]
+    
+    def __generate_inv_render_lists(self):
+        image_list = [none_img if item is None else item.img for item in self._collection]
+        number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in self._collection]
+        return image_list, number_list 
+
+    def __generate_h_render_vars(self):
+        holding_item_image = none_img if self.holding_item is None else self.holding_item.img
+        holding_item_number = "" if (self.holding_item is None or self.holding_item.number == 1) else str(self.holding_item.number)
+        return holding_item_image, holding_item_number
+    
+    def render(self, display):
+        global TC_GLINTS
+        images, numbers = self.__generate_inv_render_lists()
+
+        inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, images[i]) for i in range(36)]
+        num_objs = [Text(Fonts.MinecraftFont(25).render(numbers[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
+        
+        for idx, obj in enumerate(inventory_slots):
+            display.blit(obj.img, (obj.rect.x, obj.rect.y))
+            pygame.draw.rect(display, obj.colour, obj.rect, obj.width)
+            if self._collection[idx] is not None:
+                if self._collection[idx].enchantments is not None:
+                    display.blit(TC_GLINTS[self._collection[idx].name], (obj.rect.x, obj.rect.y))
+                if self._collection[idx].durability is not None:
+                    RenderDurabilityBar(display, obj.rect.x, obj.rect.y, self._collection[idx].durability, self._collection[idx].max_durability)
+        for num_obj in num_objs:
+            display.blit(num_obj.surface, (num_obj.x, num_obj.y))
+    
+    def render_holding_item(self, display):
+        h_image, h_number = self.__generate_h_render_vars()
+
+        x, y = pygame.mouse.get_pos()
+        if self.holding_item is not None:
+            display.blit(h_image, (x, y))
+            display.blit(Fonts.MinecraftFont(25).render(h_number, False, (255, 255, 255)), (x + 52, y + 52))
+            if self.holding_item.enchantments is not None:
+                display.blit(TC_GLINTS[self.holding_item.name], (x, y))
+            if self.holding_item.durability is not None:
+                RenderDurabilityBar(display, x, y, self.holding_item.durability, self.holding_item.max_durability)      
 
 #Player Class and Methods
 class Player:
@@ -2102,14 +2171,10 @@ class Player:
         global experience_bar, backdrop, distance, dead  
         self.distance = 0  # Set Distance Travelled
         self.dead = False
-        experience_bar = pygame.image.load('images_vB1_0_pre3/item_imgs/experience.png').convert()
+        experience_bar = pygame.image.load('images_v2023_revamp/item_imgs/experience.png').convert()
         backdrop = pygame.Rect((30, 592), (697, 30))  # Set Background for Hunger and Health Bar
 
-        self.selected_slot = 'slot1'
-        self.inventory_list = [None for _ in range(36)]
-        self.image_list = []
-        self.number_list = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
-                       '', '', '', '', '', '', '', '', '', '', '']
+        self.inventory = Inventory()
         self.armour_list = [None, None, None, None]
         self.armour_image_list = []
         self.layer_list = []
@@ -2140,12 +2205,9 @@ class Player:
         self.optional_enchant3 = None
 
         self.hotbar = Hotbar()
-        self.selected_hotbar = 'Hotbar1'
+        self.selected_hotbar = 0
         self.hotbar_item = None
         self.mode = 'game'
-        self.holding_item = None
-        self.holding_item_image = None
-        self.holding_item_number = None
         self.compressor_list = [None, None]
         self.compressor_image_list = []
         self.compressor_number_list = []
@@ -2668,51 +2730,51 @@ class Player:
         if self.dimension == "Overworld":
             if value.tile != "Leaf":
                 if value.tile == "Tree":
-                    inventory_add(Item("Oak Log", RandomNum(1, 5), None, None))
+                    player.inventory.add_item(Item("Oak Log", RandomNum(1, 5), None, None))
                 elif value.tile == "Stone":
-                    inventory_add(Item("Cobblestone", 1, None, None))
+                    player.inventory.add_item(Item("Cobblestone", 1, None, None))
                 elif value.tile == "Coal Ore":
-                    inventory_add(Item("Coal", 1, None, None))
+                    player.inventory.add_item(Item("Coal", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Lapis Ore":
-                    inventory_add(Item("Lapis Lazuli", 1, None, None))
+                    player.inventory.add_item(Item("Lapis Lazuli", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Diamond Ore":
-                    inventory_add(Item("Diamond", 1, None, None))
+                    player.inventory.add_item(Item("Diamond", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Grass":
-                    inventory_add(Item("Dirt", 1, None, None))
+                    player.inventory.add_item(Item("Dirt", 1, None, None))
                 elif value.tile == "Gravel":
                     if RandomNum(1, 10) == 1:
-                        inventory_add(Item("Flint", 1, None, None))
+                        player.inventory.add_item(Item("Flint", 1, None, None))
                     else:
-                        inventory_add(Item("Gravel", 1, None, None))
+                        player.inventory.add_item(Item("Gravel", 1, None, None))
                 else:
-                    inventory_add(Item(value.tile, 1, None, None))
+                    player.inventory.add_item(Item(value.tile, 1, None, None))
         elif self.dimension == "Underground":
             if value.tile != "Leaf":
                 if value.tile == "Tree":
-                    inventory_add(Item("Oak Log", RandomNum(1, 5), None, None))
+                    player.inventory.add_item(Item("Oak Log", RandomNum(1, 5), None, None))
                 elif value.tile == "Stone":
-                    inventory_add(Item("Cobblestone", 1, None, None))
+                    player.inventory.add_item(Item("Cobblestone", 1, None, None))
                 elif value.tile == "Coal Ore":
-                    inventory_add(Item("Coal", 1, None, None))
+                    player.inventory.add_item(Item("Coal", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Lapis Ore":
-                    inventory_add(Item("Lapis Lazuli", 1, None, None))
+                    player.inventory.add_item(Item("Lapis Lazuli", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Diamond Ore":
-                    inventory_add(Item("Diamond", 1, None, None))
+                    player.inventory.add_item(Item("Diamond", 1, None, None))
                     self.experience_points += 12
                 elif value.tile == "Grass":
-                    inventory_add(Item("Dirt", 1, None, None))
+                    player.inventory.add_item(Item("Dirt", 1, None, None))
                 elif value.tile == "Gravel":
                     if RandomNum(1, 10) == 1:
-                        inventory_add(Item("Flint", 1, None, None))
+                        player.inventory.add_item(Item("Flint", 1, None, None))
                     else:
-                        inventory_add(Item("Gravel", 1, None, None))
+                        player.inventory.add_item(Item("Gravel", 1, None, None))
                 else:
-                    inventory_add(Item(value.tile, 1, None, None))
+                    player.inventory.add_item(Item(value.tile, 1, None, None))
         if self.hotbar_item is not None:
             if self.hotbar_item.durability is not None:
                 if self.hotbar_item.enchantments is not None:
@@ -2799,39 +2861,39 @@ class Player:
             if self.isShifting: #Background tiles
                 if World.UnderTiles[(self.target[0], self.target[1])].tile == "Water": #Wate
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Water Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Water Bucket", 1, None, None))
                     World.UnderTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
                 elif World.UnderTiles[(self.target[0], self.target[1])].tile == "Lava": #Lava
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Lava Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Lava Bucket", 1, None, None))
                     World.UnderTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
             else: #Collision tiles
                 if World.Tiles[(self.target[0], self.target[1])].tile == "Water": #Water
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Water Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Water Bucket", 1, None, None))
                     World.Tiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
                 elif World.Tiles[(self.target[0], self.target[1])].tile == "Lava": #Lava
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Lava Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Lava Bucket", 1, None, None))
                     World.Tiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
         elif self.dimension == "Underground": #Underground
             if self.isShifting: #Background Tiles
                 if World.UndergroundUnderTiles[(self.target[0], self.target[1])].tile == "Water": #Water
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Water Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Water Bucket", 1, None, None))
                     World.UndergroundUnderTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
                 elif World.UndergroundUnderTiles[(self.target[0], self.target[1])].tile == "Lava": #Lava
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Lava Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Lava Bucket", 1, None, None))
                     World.UndergroundUnderTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
             else: #Collision Tiles
                 if World.UndergroundTiles[(self.target[0], self.target[1])].tile == "Water": #Water
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Water Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Water Bucket", 1, None, None))
                     World.UndergroundTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
                 elif World.UndergroundTiles[(self.target[0], self.target[1])].tile == "Lava": #Lava
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Lava Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Lava Bucket", 1, None, None))
                     World.UndergroundTiles[(self.target[0], self.target[1])] = Tile("Air", self.target[0], self.target[1], None)
 
     def place_liquid(self):
@@ -2840,39 +2902,39 @@ class Player:
             if self.isShifting:
                 if self.hotbar_item.name == "Water Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UnderTiles[(self.target[0], self.target[1])] = Tile("Water", self.target[0], self.target[1], alpha_water_tile)
                 elif self.hotbar_item.name == "Lava Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UnderTiles[(self.target[0], self.target[1])] = Tile("Lava", self.target[0], self.target[1], alpha_lava_tile)
             else:
                 if self.hotbar_item.name == "Water Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.Tiles[(self.target[0], self.target[1])] = Tile("Water", self.target[0], self.target[1], alpha_water_tile)
                 elif self.hotbar_item.name == "Lava Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.Tiles[(self.target[0], self.target[1])] = Tile("Lava", self.target[0], self.target[1], alpha_lava_tile)
         elif self.dimension == "Underground":
             if self.isShifting:
                 if self.hotbar_item.name == "Water Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UndergroundUnderTiles[(self.target[0], self.target[1])] = Tile("Water", self.target[0], self.target[1], alpha_water_tile)
                 elif self.hotbar_item.name == "Lava Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UndergroundUnderTiles[(self.target[0], self.target[1])] = Tile("Lava", self.target[0], self.target[1], alpha_lava_tile)
             else:
                 if self.hotbar_item.name == "Water Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UndergroundTiles[(self.target[0], self.target[1])] = Tile("Water", self.target[0], self.target[1], alpha_water_tile)
                 elif self.hotbar_item.name == "Lava Bucket":
                     self.hotbar_item.number -= 1
-                    inventory_add(Item("Bucket", 1, None, None))
+                    player.inventory.add_item(Item("Bucket", 1, None, None))
                     World.UndergroundTiles[(self.target[0], self.target[1])] = Tile("Lava", self.target[0], self.target[1], alpha_lava_tile)
 
     def render(self, display):
@@ -2908,7 +2970,7 @@ class Player:
         self.hunger_bar.render(display)  # draw hunger bar
 
         # DRAW EXPERIENCE BAR
-        fontx = pygame.font.Font('images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 45)
+        fontx = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 45)
         pygame.draw.rect(display, "#72a34c", (5, 630, round(self.percent_xp_to_next_level * 738), 30))
         pygame.draw.rect(display, "#424d42", (round(self.percent_xp_to_next_level * 738) + 5, 630, round((1 - self.percent_xp_to_next_level) * 738), 30))
         for i in range(18):
@@ -2919,14 +2981,13 @@ class Player:
         display.blit(experience_number, experience_number_r)  # Experience Number
 
         # render hotbar
-        self.inventory_list, self.number_list = self.hotbar.update_with_inventory(self.inventory_list, self.number_list)
-        self.hotbar.render(display, self.inventory_list, self.number_list)
+        self.hotbar.render(display, self.inventory.inventory_list)
 
         # RENDER DEBUG MENU
         global screen_width, screen_height
         if player.debug_menu:
             font9 = pygame.font.Font(
-                'images_vB1_0_pre3/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
+                'images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
             version = font9.render("Tilecraft 2023 Revamp 1", True, (0, 0, 0), (255, 255, 255))
             display.blit(version, (0, 0))
             python_version = font9.render(f"Python {sys.version[0:6]}", True, (0, 0, 0), (255, 255, 255))
@@ -2999,97 +3060,95 @@ class Recipe:
 
 def IntialiseDetails():
     global hasGeneratedOverworld, display, clock
+
     # Play Minecraft Music (Sweden)
     pygame.mixer.init()
-    pygame.mixer.music.load("images_vB1_0_pre3/music/song" + str(random.choice([3, 5, 7, 11, 12, 13, 14, 18])) + ".mp3")
+    pygame.mixer.music.load("images_v2023_revamp/music/song" + str(random.choice([3, 5, 7, 11, 12, 13, 14, 18])) + ".mp3")
     pygame.mixer.music.play()
 
     global netherGenerated, background, numList, call, difference, FPS, individual_frame, second_time, start, load, frame
 
     '''Create Items'''
 
-    global hotbar_imgs, pygame_enchant_imgs, hotbar_order, none_img, fire, no_fire
+    global hotbar_imgs, pygame_enchant_imgs, none_img, fire, no_fire
 
     # Create PYGAME inventory images for hotbar
-    wood = pygame.image.load("images_vB1_0_pre3/item_imgs/oak_log.png").convert_alpha() #0
-    planks = pygame.image.load("images_vB1_0_pre3/item_imgs/oak_planks.png").convert_alpha() #1
-    stick = pygame.image.load("images_vB1_0_pre3/item_imgs/stick.png").convert_alpha() #2
-    crafting_table = pygame.image.load("images_vB1_0_pre3/item_imgs/crafting_table.png").convert_alpha() #3
-    wooden_pickaxe = pygame.image.load("images_vB1_0_pre3/item_imgs/wooden_pickaxe.png").convert_alpha() #4
-    wooden_axe = pygame.image.load("images_vB1_0_pre3/item_imgs/wooden_axe.png").convert_alpha() #5
-    wooden_shovel = pygame.image.load("images_vB1_0_pre3/item_imgs/wooden_shovel.png").convert_alpha() #6
-    wooden_hoe = pygame.image.load("images_vB1_0_pre3/item_imgs/wooden_hoe.png").convert_alpha() #7
-    cobblestone = pygame.image.load("images_vB1_0_pre3/item_imgs/cobblestone.png").convert_alpha() #8
-    mine_entrance = pygame.image.load("images_vB1_0_pre3/item_imgs/mine_entrance.png").convert_alpha() #9
-    stone_pickaxe = pygame.image.load("images_vB1_0_pre3/item_imgs/stone_pickaxe.png").convert_alpha() #10
-    stone_axe = pygame.image.load("images_vB1_0_pre3/item_imgs/stone_axe.png").convert_alpha() #11
-    stone_shovel = pygame.image.load("images_vB1_0_pre3/item_imgs/stone_shovel.png").convert_alpha() #12
-    stone_hoe = pygame.image.load("images_vB1_0_pre3/item_imgs/stone_hoe.png").convert_alpha() #13
-    furnace = pygame.image.load("images_vB1_0_pre3/item_imgs/furnace.png").convert_alpha() #14
-    compressor = pygame.image.load("images_vB1_0_pre3/item_imgs/compressor.png").convert_alpha() #15
-    grindstone = pygame.image.load("images_vB1_0_pre3/item_imgs/grindstone.png").convert_alpha() #16
-    coal = pygame.image.load("images_vB1_0_pre3/item_imgs/coal.png").convert_alpha() #17
-    iron_ore = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_ore.png").convert_alpha() #18
-    iron_ingot = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_ingot.png").convert_alpha() #19
-    iron_pickaxe = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_pickaxe.png").convert_alpha() #20
-    iron_axe = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_axe.png").convert_alpha() #21
-    iron_shovel = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_shovel.png").convert_alpha() #22
-    iron_hoe = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_hoe.png").convert_alpha() #23
-    bucket = pygame.image.load("images_vB1_0_pre3/item_imgs/bucket.png").convert_alpha() #24
-    water_bucket = pygame.image.load("images_vB1_0_pre3/item_imgs/water_bucket.png").convert_alpha() #25
-    lava_bucket = pygame.image.load("images_vB1_0_pre3/item_imgs/lava_bucket.png").convert_alpha() #26
-    shield = pygame.image.load("images_vB1_0_pre3/item_imgs/shield.png").convert_alpha() #27
-    flint_and_steel = pygame.image.load("images_vB1_0_pre3/item_imgs/flint_and_steel.png").convert_alpha() #28
-    iron_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/iron_plate.png").convert_alpha() #29
-    tier1_iron_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier1_iron_plate.png").convert_alpha() #30
-    tier2_iron_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier2_iron_plate.png").convert_alpha() #31
-    tier3_iron_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier3_iron_plate.png").convert_alpha() #32
-    diamond = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond.png").convert_alpha() #33
-    diamond_pickaxe = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond_pickaxe.png").convert_alpha() #34
-    diamond_axe = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond_axe.png").convert_alpha() #35
-    diamond_shovel = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond_shovel.png").convert_alpha() #36
-    diamond_hoe = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond_hoe.png").convert_alpha() #37
-    diamond_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/diamond_plate.png").convert_alpha() #38
-    tier1_diamond_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier1_diamond_plate.png").convert_alpha() #39
-    tier2_diamond_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier2_diamond_plate.png").convert_alpha() #40
-    tier3_diamond_plate = pygame.image.load("images_vB1_0_pre3/item_imgs/tier3_diamond_plate.png").convert_alpha() #41
-    jukebox = pygame.image.load("images_vB1_0_pre3/item_imgs/jukebox.png").convert_alpha() #42
-    pigstep_disc = pygame.image.load("images_vB1_0_pre3/item_imgs/pigstep_disc.png").convert_alpha() #43
-    obsidian = pygame.image.load("images_vB1_0_pre3/item_imgs/obsidian.png").convert_alpha() #44
-    enchanting_table = pygame.image.load("images_vB1_0_pre3/item_imgs/enchanting_table.png").convert_alpha() #45
-    book = pygame.image.load("images_vB1_0_pre3/item_imgs/book.png").convert_alpha() #46
-    bookshelf = pygame.image.load("images_vB1_0_pre3/item_imgs/bookshelf.png").convert_alpha() #47
-    lapis = pygame.image.load("images_vB1_0_pre3/item_imgs/lapis_lazuli.png").convert_alpha() #48
-    bread = pygame.image.load("images_vB1_0_pre3/item_imgs/bread.png").convert_alpha() #49
-    golden_carrot = pygame.image.load("images_vB1_0_pre3/item_imgs/golden_carrot.png").convert_alpha() #50
-    golden_apple = pygame.image.load("images_vB1_0_pre3/item_imgs/golden_apple.png") #51
-    dirt = pygame.image.load("images_vB1_0_pre3/item_imgs/dirt.png").convert_alpha() #52
-    sand = pygame.image.load("images_vB1_0_pre3/item_imgs/sand.png").convert_alpha() #53
-    snow = pygame.image.load("images_vB1_0_pre3/item_imgs/snow.png").convert_alpha() #54
-    gravel = pygame.image.load("images_vB1_0_pre3/item_imgs/gravel.png").convert_alpha() #55
-    flint = pygame.image.load("images_vB1_0_pre3/item_imgs/flint.png").convert_alpha() #56
-    bed = pygame.image.load("images_vB1_0_pre3/item_imgs/bed.png").convert_alpha() #57
-    hay = pygame.image.load("images_vB1_0_pre3/item_imgs/hay_bale.png").convert_alpha() #58
+    wood = pygame.image.load("images_v2023_revamp/item_imgs/oak_log.png").convert_alpha() #0
+    planks = pygame.image.load("images_v2023_revamp/item_imgs/oak_planks.png").convert_alpha() #1
+    stick = pygame.image.load("images_v2023_revamp/item_imgs/stick.png").convert_alpha() #2
+    crafting_table = pygame.image.load("images_v2023_revamp/item_imgs/crafting_table.png").convert_alpha() #3
+    wooden_pickaxe = pygame.image.load("images_v2023_revamp/item_imgs/wooden_pickaxe.png").convert_alpha() #4
+    wooden_axe = pygame.image.load("images_v2023_revamp/item_imgs/wooden_axe.png").convert_alpha() #5
+    wooden_shovel = pygame.image.load("images_v2023_revamp/item_imgs/wooden_shovel.png").convert_alpha() #6
+    wooden_hoe = pygame.image.load("images_v2023_revamp/item_imgs/wooden_hoe.png").convert_alpha() #7
+    cobblestone = pygame.image.load("images_v2023_revamp/item_imgs/cobblestone.png").convert_alpha() #8
+    mine_entrance = pygame.image.load("images_v2023_revamp/item_imgs/mine_entrance.png").convert_alpha() #9
+    stone_pickaxe = pygame.image.load("images_v2023_revamp/item_imgs/stone_pickaxe.png").convert_alpha() #10
+    stone_axe = pygame.image.load("images_v2023_revamp/item_imgs/stone_axe.png").convert_alpha() #11
+    stone_shovel = pygame.image.load("images_v2023_revamp/item_imgs/stone_shovel.png").convert_alpha() #12
+    stone_hoe = pygame.image.load("images_v2023_revamp/item_imgs/stone_hoe.png").convert_alpha() #13
+    furnace = pygame.image.load("images_v2023_revamp/item_imgs/furnace.png").convert_alpha() #14
+    compressor = pygame.image.load("images_v2023_revamp/item_imgs/compressor.png").convert_alpha() #15
+    grindstone = pygame.image.load("images_v2023_revamp/item_imgs/grindstone.png").convert_alpha() #16
+    coal = pygame.image.load("images_v2023_revamp/item_imgs/coal.png").convert_alpha() #17
+    iron_ore = pygame.image.load("images_v2023_revamp/item_imgs/iron_ore.png").convert_alpha() #18
+    iron_ingot = pygame.image.load("images_v2023_revamp/item_imgs/iron_ingot.png").convert_alpha() #19
+    iron_pickaxe = pygame.image.load("images_v2023_revamp/item_imgs/iron_pickaxe.png").convert_alpha() #20
+    iron_axe = pygame.image.load("images_v2023_revamp/item_imgs/iron_axe.png").convert_alpha() #21
+    iron_shovel = pygame.image.load("images_v2023_revamp/item_imgs/iron_shovel.png").convert_alpha() #22
+    iron_hoe = pygame.image.load("images_v2023_revamp/item_imgs/iron_hoe.png").convert_alpha() #23
+    bucket = pygame.image.load("images_v2023_revamp/item_imgs/bucket.png").convert_alpha() #24
+    water_bucket = pygame.image.load("images_v2023_revamp/item_imgs/water_bucket.png").convert_alpha() #25
+    lava_bucket = pygame.image.load("images_v2023_revamp/item_imgs/lava_bucket.png").convert_alpha() #26
+    shield = pygame.image.load("images_v2023_revamp/item_imgs/shield.png").convert_alpha() #27
+    flint_and_steel = pygame.image.load("images_v2023_revamp/item_imgs/flint_and_steel.png").convert_alpha() #28
+    iron_plate = pygame.image.load("images_v2023_revamp/item_imgs/iron_plate.png").convert_alpha() #29
+    tier1_iron_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier1_iron_plate.png").convert_alpha() #30
+    tier2_iron_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier2_iron_plate.png").convert_alpha() #31
+    tier3_iron_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier3_iron_plate.png").convert_alpha() #32
+    diamond = pygame.image.load("images_v2023_revamp/item_imgs/diamond.png").convert_alpha() #33
+    diamond_pickaxe = pygame.image.load("images_v2023_revamp/item_imgs/diamond_pickaxe.png").convert_alpha() #34
+    diamond_axe = pygame.image.load("images_v2023_revamp/item_imgs/diamond_axe.png").convert_alpha() #35
+    diamond_shovel = pygame.image.load("images_v2023_revamp/item_imgs/diamond_shovel.png").convert_alpha() #36
+    diamond_hoe = pygame.image.load("images_v2023_revamp/item_imgs/diamond_hoe.png").convert_alpha() #37
+    diamond_plate = pygame.image.load("images_v2023_revamp/item_imgs/diamond_plate.png").convert_alpha() #38
+    tier1_diamond_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier1_diamond_plate.png").convert_alpha() #39
+    tier2_diamond_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier2_diamond_plate.png").convert_alpha() #40
+    tier3_diamond_plate = pygame.image.load("images_v2023_revamp/item_imgs/tier3_diamond_plate.png").convert_alpha() #41
+    jukebox = pygame.image.load("images_v2023_revamp/item_imgs/jukebox.png").convert_alpha() #42
+    pigstep_disc = pygame.image.load("images_v2023_revamp/item_imgs/pigstep_disc.png").convert_alpha() #43
+    obsidian = pygame.image.load("images_v2023_revamp/item_imgs/obsidian.png").convert_alpha() #44
+    enchanting_table = pygame.image.load("images_v2023_revamp/item_imgs/enchanting_table.png").convert_alpha() #45
+    book = pygame.image.load("images_v2023_revamp/item_imgs/book.png").convert_alpha() #46
+    bookshelf = pygame.image.load("images_v2023_revamp/item_imgs/bookshelf.png").convert_alpha() #47
+    lapis = pygame.image.load("images_v2023_revamp/item_imgs/lapis_lazuli.png").convert_alpha() #48
+    bread = pygame.image.load("images_v2023_revamp/item_imgs/bread.png").convert_alpha() #49
+    golden_carrot = pygame.image.load("images_v2023_revamp/item_imgs/golden_carrot.png").convert_alpha() #50
+    golden_apple = pygame.image.load("images_v2023_revamp/item_imgs/golden_apple.png") #51
+    dirt = pygame.image.load("images_v2023_revamp/item_imgs/dirt.png").convert_alpha() #52
+    sand = pygame.image.load("images_v2023_revamp/item_imgs/sand.png").convert_alpha() #53
+    snow = pygame.image.load("images_v2023_revamp/item_imgs/snow.png").convert_alpha() #54
+    gravel = pygame.image.load("images_v2023_revamp/item_imgs/gravel.png").convert_alpha() #55
+    flint = pygame.image.load("images_v2023_revamp/item_imgs/flint.png").convert_alpha() #56
+    bed = pygame.image.load("images_v2023_revamp/item_imgs/bed.png").convert_alpha() #57
+    hay = pygame.image.load("images_v2023_revamp/item_imgs/hay_bale.png").convert_alpha() #58
 
-    none_img = pygame.image.load("images_vB1_0_pre3/item_imgs/slot.png").convert_alpha()  # White Space
-    fire = pygame.image.load("images_vB1_0_pre3/item_imgs/fire.png").convert_alpha()  # Fire when smelting
-    no_fire = pygame.image.load("images_vB1_0_pre3/item_imgs/no_fire.png").convert_alpha()  # No fire when smelting
-
-    # List for Hotbar Orders
-    hotbar_order = ['Hotbar1', 'Hotbar2', 'Hotbar3', 'Hotbar4', 'Hotbar5', 'Hotbar6', 'Hotbar7', 'Hotbar8', 'Hotbar9']
+    none_img = pygame.image.load("images_v2023_revamp/item_imgs/slot.png").convert_alpha()  # White Space
+    fire = pygame.image.load("images_v2023_revamp/item_imgs/fire.png").convert_alpha()  # Fire when smelting
+    no_fire = pygame.image.load("images_v2023_revamp/item_imgs/no_fire.png").convert_alpha()  # No fire when smelting
 
     # Health/Hunger images
     global full_heart, half_heart, empty_heart, full_hunger, half_hunger, empty_hunger
-    full_heart = pygame.image.load('images_vB1_0_pre3/FullHeart_20x20.png').convert()  # Full Heart (2)
-    half_heart = pygame.image.load('images_vB1_0_pre3/half_heart_20x20.png').convert()  # Half Heart (1)
-    empty_heart = pygame.image.load('images_vB1_0_pre3/empty_heart_20x20.png').convert()  # Empty Heart (0)
-    full_hunger = pygame.image.load('images_vB1_0_pre3/hunger_20x20.png')  # Full Hunger (2)
-    half_hunger = pygame.image.load('images_vB1_0_pre3/half_hunger_20x20.png')  # Half Hunger (1)
-    empty_hunger = pygame.image.load('images_vB1_0_pre3/empty_hunger_20x20.png')  # Empty Hunger (0)
+    full_heart = pygame.image.load('images_v2023_revamp/FullHeart_20x20.png').convert()  # Full Heart (2)
+    half_heart = pygame.image.load('images_v2023_revamp/half_heart_20x20.png').convert()  # Half Heart (1)
+    empty_heart = pygame.image.load('images_v2023_revamp/empty_heart_20x20.png').convert()  # Empty Heart (0)
+    full_hunger = pygame.image.load('images_v2023_revamp/hunger_20x20.png')  # Full Hunger (2)
+    half_hunger = pygame.image.load('images_v2023_revamp/half_hunger_20x20.png')  # Half Hunger (1)
+    empty_hunger = pygame.image.load('images_v2023_revamp/empty_hunger_20x20.png')  # Empty Hunger (0)
 
     # Empty slot
     global slot
-    slot = pygame.image.load("images_vB1_0_pre3/item_imgs/slot.png").convert()
+    slot = pygame.image.load("images_v2023_revamp/item_imgs/slot.png").convert()
 
     global ITEM_COLOURS
     ITEM_COLOURS = { #Colours for all rarities
@@ -3180,7 +3239,7 @@ def IntialiseDetails():
     new_glint_name_list = []
     int_glint_num_list = []
     item_names = []
-    for filename in os.listdir('images_vB1_0_pre3/glints'):
+    for filename in os.listdir('images_v2023_revamp/glints'):
         glint_num_list.append(filename[5:-4])
         glint_fullname_list.append(filename[:-4])
     for i in glint_num_list:
@@ -3190,7 +3249,7 @@ def IntialiseDetails():
         index = glint_num_list.index(str(i))
         new_glint_name_list.append(glint_fullname_list[index])
     for i in new_glint_name_list:
-        image = pygame.image.load('images_vB1_0_pre3/glints/' + i + '.png').convert_alpha()
+        image = pygame.image.load('images_v2023_revamp/glints/' + i + '.png').convert_alpha()
         glint_list.append(image)
     for key in TC_ITEMS:
         item_names.append(key)
@@ -3202,78 +3261,78 @@ def IntialiseDetails():
     global oak_log_tile, water_tile, leaf_tile, tree_tile, \
         grass_tile, netherrack_tile, sand_tile, snow_tile, stone_tile,  alpha_stone_tile, \
         mine_entrance_tile, coal_ore_tile, iron_ore_tile, lapis_ore_tile, diamond_ore_tile, alpha_lava_tile
-    grass_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/grass.png').convert()  # Grass
-    netherrack_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/netherrack.png').convert()  # Netherrack
-    sand_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/sand.png').convert()  # Sand
-    snow_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/snow.png').convert()  # Snow
-    bookshelf_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/bookshelf_tile.png").convert()
-    coal_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/coal_ore_tile.png").convert()
-    cobblestone_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/cobblestone_tile.png").convert()
-    diamond_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/diamond_ore_tile.png").convert()
-    dirt_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/dirt_tile.png").convert()
-    gravel_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/gravel_tile.png").convert()
-    hay_bale_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/hay_bale_tile.png").convert()
-    iron_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/iron_ore_tile.png").convert()
-    lapis_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/lapis_ore_tile.png").convert()
-    lava_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/lava_tile.png").convert()
-    leaf_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/leaf.png").convert_alpha()
-    mine_entrance_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/mine_entrance_tile.png").convert()
-    oak_log_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_log_tile.png").convert()
-    oak_planks_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_planks_tile.png").convert()
-    obsidian_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/obsidian_tile.png").convert()
-    stone_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/stone_tile.png").convert()
-    tree_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_log_tile.png")
-    water_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/water_tile.png").convert()
+    grass_tile = pygame.image.load('images_v2023_revamp/tile_imgs/grass.png').convert()  # Grass
+    netherrack_tile = pygame.image.load('images_v2023_revamp/tile_imgs/netherrack.png').convert()  # Netherrack
+    sand_tile = pygame.image.load('images_v2023_revamp/tile_imgs/sand.png').convert()  # Sand
+    snow_tile = pygame.image.load('images_v2023_revamp/tile_imgs/snow.png').convert()  # Snow
+    bookshelf_tile = pygame.image.load("images_v2023_revamp/tile_imgs/bookshelf_tile.png").convert()
+    coal_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/coal_ore_tile.png").convert()
+    cobblestone_tile = pygame.image.load("images_v2023_revamp/tile_imgs/cobblestone_tile.png").convert()
+    diamond_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/diamond_ore_tile.png").convert()
+    dirt_tile = pygame.image.load("images_v2023_revamp/tile_imgs/dirt_tile.png").convert()
+    gravel_tile = pygame.image.load("images_v2023_revamp/tile_imgs/gravel_tile.png").convert()
+    hay_bale_tile = pygame.image.load("images_v2023_revamp/tile_imgs/hay_bale_tile.png").convert()
+    iron_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/iron_ore_tile.png").convert()
+    lapis_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/lapis_ore_tile.png").convert()
+    lava_tile = pygame.image.load("images_v2023_revamp/tile_imgs/lava_tile.png").convert()
+    leaf_tile = pygame.image.load("images_v2023_revamp/tile_imgs/leaf.png").convert_alpha()
+    mine_entrance_tile = pygame.image.load("images_v2023_revamp/tile_imgs/mine_entrance_tile.png").convert()
+    oak_log_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_log_tile.png").convert()
+    oak_planks_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_planks_tile.png").convert()
+    obsidian_tile = pygame.image.load("images_v2023_revamp/tile_imgs/obsidian_tile.png").convert()
+    stone_tile = pygame.image.load("images_v2023_revamp/tile_imgs/stone_tile.png").convert()
+    tree_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_log_tile.png")
+    water_tile = pygame.image.load("images_v2023_revamp/tile_imgs/water_tile.png").convert()
 
     # Create Background Tile Images
     global alpha_grass_tile, alpha_sand_tile, alpha_snow_tile, alpha_water_tile, alpha_gravel_tile, alpha_lava_tile, alpha_stone_tile
-    alpha_grass_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/grass.png').convert()  # Grass
+    alpha_grass_tile = pygame.image.load('images_v2023_revamp/tile_imgs/grass.png').convert()  # Grass
     alpha_grass_tile.set_alpha(200)
-    alpha_netherrack_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/netherrack.png').convert()  # Netherrack
+    alpha_netherrack_tile = pygame.image.load('images_v2023_revamp/tile_imgs/netherrack.png').convert()  # Netherrack
     alpha_netherrack_tile.set_alpha(200)
-    alpha_sand_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/sand.png').convert()  # Sand
+    alpha_sand_tile = pygame.image.load('images_v2023_revamp/tile_imgs/sand.png').convert()  # Sand
     alpha_sand_tile.set_alpha(200)
-    alpha_snow_tile = pygame.image.load('images_vB1_0_pre3/tile_imgs/snow.png').convert()  # Snow
+    alpha_snow_tile = pygame.image.load('images_v2023_revamp/tile_imgs/snow.png').convert()  # Snow
     alpha_snow_tile.set_alpha(200)
-    alpha_bookshelf_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/bookshelf_tile.png").convert()
+    alpha_bookshelf_tile = pygame.image.load("images_v2023_revamp/tile_imgs/bookshelf_tile.png").convert()
     alpha_bookshelf_tile.set_alpha(200)
-    alpha_coal_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/coal_ore_tile.png").convert()
+    alpha_coal_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/coal_ore_tile.png").convert()
     alpha_coal_ore_tile.set_alpha(200)
-    alpha_cobblestone_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/cobblestone_tile.png").convert()
+    alpha_cobblestone_tile = pygame.image.load("images_v2023_revamp/tile_imgs/cobblestone_tile.png").convert()
     alpha_cobblestone_tile.set_alpha(200)
-    alpha_diamond_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/diamond_ore_tile.png").convert()
+    alpha_diamond_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/diamond_ore_tile.png").convert()
     alpha_diamond_ore_tile.set_alpha(200)
-    alpha_dirt_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/dirt_tile.png").convert()
+    alpha_dirt_tile = pygame.image.load("images_v2023_revamp/tile_imgs/dirt_tile.png").convert()
     alpha_dirt_tile.set_alpha(200)
-    alpha_gravel_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/gravel_tile.png").convert()
+    alpha_gravel_tile = pygame.image.load("images_v2023_revamp/tile_imgs/gravel_tile.png").convert()
     alpha_gravel_tile.set_alpha(200)
-    alpha_hay_bale_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/hay_bale_tile.png").convert()
+    alpha_hay_bale_tile = pygame.image.load("images_v2023_revamp/tile_imgs/hay_bale_tile.png").convert()
     alpha_hay_bale_tile.set_alpha(200)
-    alpha_iron_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/iron_ore_tile.png").convert()
+    alpha_iron_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/iron_ore_tile.png").convert()
     alpha_iron_ore_tile.set_alpha(200)
-    alpha_lapis_ore_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/lapis_ore_tile.png").convert()
+    alpha_lapis_ore_tile = pygame.image.load("images_v2023_revamp/tile_imgs/lapis_ore_tile.png").convert()
     alpha_lapis_ore_tile.set_alpha(200)
-    alpha_lava_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/lava_tile.png").convert()
+    alpha_lava_tile = pygame.image.load("images_v2023_revamp/tile_imgs/lava_tile.png").convert()
     alpha_lava_tile.set_alpha(200)
-    alpha_leaf_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/leaf.png").convert_alpha()
+    alpha_leaf_tile = pygame.image.load("images_v2023_revamp/tile_imgs/leaf.png").convert_alpha()
     alpha_leaf_tile.set_alpha(200)
-    alpha_mine_entrance_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/mine_entrance_tile.png").convert()
+    alpha_mine_entrance_tile = pygame.image.load("images_v2023_revamp/tile_imgs/mine_entrance_tile.png").convert()
     alpha_mine_entrance_tile.set_alpha(200)
-    alpha_oak_log_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_log_tile.png").convert()
+    alpha_oak_log_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_log_tile.png").convert()
     alpha_oak_log_tile.set_alpha(200)
-    alpha_oak_planks_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_planks_tile.png").convert()
+    alpha_oak_planks_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_planks_tile.png").convert()
     alpha_oak_planks_tile.set_alpha(200)
-    alpha_obsidian_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/obsidian_tile.png").convert()
+    alpha_obsidian_tile = pygame.image.load("images_v2023_revamp/tile_imgs/obsidian_tile.png").convert()
     alpha_obsidian_tile.set_alpha(200)
-    alpha_stone_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/stone_tile.png").convert()
+    alpha_stone_tile = pygame.image.load("images_v2023_revamp/tile_imgs/stone_tile.png").convert()
     alpha_stone_tile.set_alpha(200)
-    alpha_tree_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/oak_log_tile.png")
+    alpha_tree_tile = pygame.image.load("images_v2023_revamp/tile_imgs/oak_log_tile.png")
     alpha_tree_tile.set_alpha(200)
-    alpha_water_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/water_tile.png").convert()
+    alpha_water_tile = pygame.image.load("images_v2023_revamp/tile_imgs/water_tile.png").convert()
     alpha_water_tile.set_alpha(200)
 
     global bedrock_tile
-    bedrock_tile = pygame.image.load("images_vB1_0_pre3/tile_imgs/bedrock.png").convert()
+    bedrock_tile = pygame.image.load("images_v2023_revamp/tile_imgs/bedrock.png").convert()
     bedrock_tile.set_alpha(200)
 
     global TC_TILES
@@ -3305,12 +3364,12 @@ def IntialiseDetails():
 
     # Create Breaking Images
     global breaking_list, world
-    breaking1 = pygame.image.load('images_vB1_0_pre3/breaking/breaking1.png').convert_alpha()
-    breaking2 = pygame.image.load('images_vB1_0_pre3/breaking/breaking2.png').convert_alpha()
-    breaking3 = pygame.image.load('images_vB1_0_pre3/breaking/breaking3.png').convert_alpha()
-    breaking4 = pygame.image.load('images_vB1_0_pre3/breaking/breaking4.png').convert_alpha()
-    breaking5 = pygame.image.load('images_vB1_0_pre3/breaking/breaking5.png').convert_alpha()
-    breaking6 = pygame.image.load('images_vB1_0_pre3/breaking/breaking6.png').convert_alpha()
+    breaking1 = pygame.image.load('images_v2023_revamp/breaking/breaking1.png').convert_alpha()
+    breaking2 = pygame.image.load('images_v2023_revamp/breaking/breaking2.png').convert_alpha()
+    breaking3 = pygame.image.load('images_v2023_revamp/breaking/breaking3.png').convert_alpha()
+    breaking4 = pygame.image.load('images_v2023_revamp/breaking/breaking4.png').convert_alpha()
+    breaking5 = pygame.image.load('images_v2023_revamp/breaking/breaking5.png').convert_alpha()
+    breaking6 = pygame.image.load('images_v2023_revamp/breaking/breaking6.png').convert_alpha()
     breaking_list = [breaking1, breaking2, breaking3, breaking4, breaking5, breaking6]
 
     '''Create Crafting Recipes'''
@@ -3490,7 +3549,6 @@ def create_world():
     hasGeneratedOverworld = False
     hasGeneratedUnderground = 'Not Loaded'
     global display, clock, world, netherGenerated, background, numList, call, difference, FPS, individual_frame, start, load, frame, loading, previous_frame
-    pygame.init()  # Initialise Pygame Module
     display = pygame.display.set_mode((750, 750))  # Set display
     pygame.display.set_caption("Tilecraft 2023 Revamp 1")  # Set title
     clock = pygame.time.Clock()
@@ -3505,7 +3563,7 @@ def create_world():
     previous_frame = 0
     difference = 0
     frame = 0
-    loading = pygame.image.load("images_vB1_0_pre3/loading.png").convert()
+    loading = pygame.image.load("images_v2023_revamp/loading.png").convert()
     signal = Main()  #Start Game by Calling the Main Loop
     if signal == 'title screen':
         title_screen()
@@ -3694,7 +3752,7 @@ def title_screen():
 
     # Play Minecraft Music
     pygame.mixer.init()
-    pygame.mixer.music.load(random.choice(["images_vB1_0_pre3/music/song6.mp3", "images_vB1_0_pre3/music/song8.mp3"]))
+    pygame.mixer.music.load(random.choice(["images_v2023_revamp/music/song6.mp3", "images_v2023_revamp/music/song8.mp3"]))
     pygame.mixer.music.play()
 
     # Create tkinter window
@@ -3707,7 +3765,7 @@ def title_screen():
     screen_height = window.winfo_screenheight()
 
     # Create background image
-    bg = tkinter.PhotoImage(file="images_vB1_0_pre3/background_vB1_0_pre3.png")
+    bg = tkinter.PhotoImage(file="images_v2023_revamp/background_vB1_0_pre3.png")
 
     # Create fonts
     bold_font = tkinter.font.Font(family='Minecraft Ten', size=45)
@@ -3772,7 +3830,7 @@ def title_screen():
 
 def RemoveItem():
     global player
-    all_lists = [player.enchanting_list, player.inventory_list, player.craft_list,
+    all_lists = [player.enchanting_list, player.craft_list,
                  player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list]
     for i in all_lists:
         for j in range(len(i)):
@@ -3782,14 +3840,8 @@ def RemoveItem():
                 elif i[j].durability is not None:
                     if i[j].durability <= 0:
                         i[j] = None
-    player.enchanting_list, player.inventory_list, player.craft_list, \
+    player.enchanting_list, player.craft_list, \
     player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list = all_lists
-    if player.holding_item is not None:
-        if player.holding_item.number <= 0:
-            player.holding_item = None
-        elif player.holding_item.durability is not None:
-            if player.holding_item.durability <= 0:
-                player.holding_item = None
 
 def Crafting():
     if player.mode == "inventory":
@@ -3945,46 +3997,14 @@ def Enchant3():  # Third ENCHANTING BOX (ENCHANTS start at LEVEL 0, MAX 5, extra
                 player.experience_levels -= 3
                 EnchantSet()  # Remove Enchants
 
-#add items to inventory
-def inventory_add(item):
-    try:
-        if item.stackNum == 1:
-            while item.number > 0:
-                player.inventory_list[player.inventory_list.index(None)] = Item(item.name, 1, item.enchantments, item.durability)
-                item.number -= 1
-        elif item.stackNum == 64:
-            while item.number > 0:
-                for i, itm in enumerate(player.inventory_list):
-                    if itm is not None:
-                        if itm.name == item.name and itm.number < 64:
-                            idx, existing_num = i, itm.number
-                            break
-                else:
-                    idx, existing_num = player.inventory_list.index(None), 0
-                amount = total if (total := item.number + existing_num) < 64 else 64
-                player.inventory_list[idx] = Item(item.name, amount, item.enchantments, item.durability)
-                item.number -= amount - existing_num
-    except ValueError:
-        screen.print("Your inventory is full!")
-
 # Render Inventory List to Image and Number List
 def image_render():
     global pygame_enchant_imgs, player, enchant_name_list, enchant_img_list, enchanting_list, enchanting_image_list, enchanting_number_list, experience, smelting_time, no_fire, fire, fuel_val, inventory_list, image_list, number_list, armour_image_list, craft_image_list, craft_number_list, grid_image_list, grid_number_list, grid_list, smelting_list, smelt_image_list, smelt_number_list, fuel_img
-    player.image_list, player.number_list, player.armour_image_list, player.craft_image_list, \
+    player.armour_image_list, player.craft_image_list, \
     player.craft_number_list, player.grid_image_list, player.grid_number_list, player.smelt_image_list, \
     player.smelt_number_list, player.enchanting_image_list, player.enchanting_number_list, player.compressor_image_list, \
     player.compressor_number_list, player.layer_list, player.grindstone_image_list, player.grindstone_number_list = \
-        [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
-
-    '''Inventory Section'''
-
-    # Create images list and number list
-    player.image_list = [none_img if item is None else item.img for item in player.inventory_list]
-    player.number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in player.inventory_list]
-
-    #Create Holding Item for Inventory
-    player.holding_item_image = none_img if player.holding_item is None else player.holding_item.img
-    player.holding_item_number = "" if (player.holding_item is None or player.holding_item.number == 1) else str(player.holding_item.number)
+        [], [], [], [], [], [], [], [], [], [], [], [], [], []
 
     '''Armour Section'''
 
@@ -4046,12 +4066,6 @@ def image_render():
 
     '''Smelting Section'''
 
-    # Remove Value if Number is 0
-    for i in range(len(player.smelting_list)):
-        if player.smelting_list[i] is not None:
-            if player.smelting_list[i].number == 0:
-                player.smelting_list[i] = None
-
     # Convert List to Images and Numbers
     for i in player.smelting_list:
         if i is None:  # Set White Background for NONE Slots
@@ -4068,12 +4082,6 @@ def image_render():
                 player.smelt_number_list[i] = ''
 
     '''Enchanting Section'''
-
-    # Remove Value if Number is 0
-    for i in range(len(player.enchanting_list)):
-        if player.enchanting_list[i] is not None:
-            if player.enchanting_list[i].number == 0:
-                player.enchanting_list[i] = None
 
     # Convert List to Images and Numbers
     for i in player.enchanting_list:
@@ -4092,12 +4100,6 @@ def image_render():
 
     '''Compressing Section'''
 
-    # Remove Value if Number is 0
-    for i in range(len(player.compressor_list)):
-        if player.compressor_list[i] is not None:
-            if player.compressor_list[i].number == 0:
-                player.compressor_list[i] = None
-
     for i in player.compressor_list:
         if i is None: #Set Background for NONE Slots
             player.compressor_image_list.append(none_img)
@@ -4114,12 +4116,6 @@ def image_render():
 
     '''Grindstone Section'''
 
-    # Remove Value if Number is 0
-    for i in range(len(player.grindstone_list)):
-        if player.grindstone_list[i] is not None:
-            if player.grindstone_list[i].number == 0:
-                player.grindstone_list[i] = None
-
     for i in player.grindstone_list:
         if i is None:  # Set Background for NONE Slots
             player.grindstone_image_list.append(none_img)
@@ -4134,4 +4130,5 @@ def image_render():
             if player.grindstone_list[i].number == 1:
                 player.grindstone_number_list[i] = ''
 
-title_screen()
+if __name__ in "__main__":
+    title_screen()
