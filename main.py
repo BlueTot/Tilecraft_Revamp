@@ -894,24 +894,24 @@ def RenderDurabilityBar(display, x, y, durability, max_durability):
         pygame.draw.rect(display, (0, 0, 0), (x + 5, y + 72, 72, 5))
         pygame.draw.rect(display, colour, (x + 5, y + 72, math.floor(72 * durability / max_durability), 5))
 
-#Inventory Grid (36 Slots)
-def InventoryGrid(display):
-    global TC_GLINTS, item_name_list
+# #Inventory Grid (36 Slots)
+# def InventoryGrid(display):
+#     global TC_GLINTS, item_name_list
 
-    image_render()
-    inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, player.image_list[i]) for i in range(36)]
-    numbers = [Text(Fonts.MinecraftFont(25).render(player.number_list[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
+#     image_render()
+#     inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, player.image_list[i]) for i in range(36)]
+#     numbers = [Text(Fonts.MinecraftFont(25).render(player.number_list[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
     
-    for i in range(len(inventory_slots)):
-        display.blit(inventory_slots[i].img, (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
-        pygame.draw.rect(display, inventory_slots[i].colour, inventory_slots[i].rect, inventory_slots[i].width)
-        if player.inventory.inventory_list[i] is not None:
-            if player.inventory.inventory_list[i].enchantments is not None:
-                display.blit(TC_GLINTS[player.inventory.inventory_list[i].name], (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
-            if player.inventory.inventory_list[i].durability is not None:
-                RenderDurabilityBar(display, inventory_slots[i].rect.x, inventory_slots[i].rect.y, player.inventory.inventory_list[i].durability, player.inventory.inventory_list[i].max_durability)
-    for i in numbers:
-        display.blit(i.surface, (i.x, i.y))
+#     for i in range(len(inventory_slots)):
+#         display.blit(inventory_slots[i].img, (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
+#         pygame.draw.rect(display, inventory_slots[i].colour, inventory_slots[i].rect, inventory_slots[i].width)
+#         if player.inventory.inventory_list[i] is not None:
+#             if player.inventory.inventory_list[i].enchantments is not None:
+#                 display.blit(TC_GLINTS[player.inventory.inventory_list[i].name], (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
+#             if player.inventory.inventory_list[i].durability is not None:
+#                 RenderDurabilityBar(display, inventory_slots[i].rect.x, inventory_slots[i].rect.y, player.inventory.inventory_list[i].durability, player.inventory.inventory_list[i].max_durability)
+#     for i in numbers:
+#         display.blit(i.surface, (i.x, i.y))
 
 #Armour Grid for Player
 def ArmourGrid(display):
@@ -1147,7 +1147,7 @@ def SetHotbarProperties(n):
 
 # Game Loop
 def Main():
-    global TimerRunning, screen, furnace_interface, crafting_grid, small_crafting_grid, inventory_grid, World, player, difference, individual_frame, FPS, mode, val, comma, number, called, world, frame, play_time, endTime, minute, seconds, true_play_time, PlayTime, hotbar_backgrounds, selected_hotbar
+    global TimerRunning, screen, World, player, difference, individual_frame, FPS, mode, val, comma, number, called, world, frame, play_time, endTime, minute, seconds, true_play_time, PlayTime
     global hasGeneratedOverworld, display, clock, loading, hasGeneratedUnderground, previous_frame
     while True:
         clock.tick()
@@ -1155,7 +1155,7 @@ def Main():
         # Calculate FPS
         frame += 1  # Update frame
         individual_frame += 1  # Update individual frame for each second
-        end = time.time()  # Calculate current time
+        end = time.perf_counter()  # Calculate current time
         PlayTime = end - start  # Calculate current playtime
         if (end - start - difference) > 1:  # Reset every second
             previous_frame = individual_frame
@@ -2031,8 +2031,7 @@ class ItemCollection:
     def __init__(self, size):
         self._collection = [None]*size
     
-    def _remove_null_items(self):
-        global player
+    def remove_null_items(self):
         for idx, item in enumerate(self._collection):
             if item is not None:
                 if item.number <= 0:
@@ -2063,6 +2062,10 @@ class Inventory(ItemCollection):
                 if self.holding_item.durability <= 0:
                     self.holding_item = None
     
+    def remove_null_items(self):
+        super().remove_null_items()
+        self.__remove_null_holding_item()
+    
     def add_item(self, item):  # add items to inventory
         global screen
         try:
@@ -2084,7 +2087,6 @@ class Inventory(ItemCollection):
                     item.number -= amount - existing_num
         except ValueError:
             screen.print("Your inventory is full!")
-        self._remove_null_items()
     
     def get_hotbar_item(self, selected_hotbar):
         return self._collection[27 + selected_hotbar]
@@ -3558,7 +3560,7 @@ def create_world():
     call = False
     load = optionData()
     Quit()
-    start = time.time()
+    start = time.perf_counter()
     individual_frame = 0
     previous_frame = 0
     difference = 0
@@ -3830,6 +3832,7 @@ def title_screen():
 
 def RemoveItem():
     global player
+    player.inventory.remove_null_items()
     all_lists = [player.enchanting_list, player.craft_list,
                  player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list]
     for i in all_lists:
