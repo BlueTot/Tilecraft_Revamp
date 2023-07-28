@@ -17,8 +17,12 @@ title_screen_mode = 'normal'
 class Fonts:
 
     @staticmethod
-    def MinecraftFont(size):
+    def RegularMinecraftFont(size):
         return pygame.font.Font("images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf", size)
+
+    @staticmethod
+    def BoldMinecraftFont(size):
+        return pygame.font.Font("images_v2023_revamp\minecraft-font\MinecraftBold-nMK1.otf", size)
 
 '''Cheats Datapack Section'''
 
@@ -922,81 +926,6 @@ def ArmourGrid(display):
             elif i[1] == 3: #Tier 3
                 pygame.draw.rect(display, i[0], (84, 39, 165, 165), 12)
 
-#2x2 Small Crafting Grid within Inventory
-def SmallCraftGrid(display):
-    image_render()
-    crafting_grid = [
-        Grid((83, 83, 83), pygame.Rect((390, 75), (82, 82)), 2, player.craft_image_list[0]),
-        Grid((83, 83, 83), pygame.Rect((472, 75), (82, 82)), 2, player.craft_image_list[1]),
-        Grid((83, 83, 83), pygame.Rect((390, 157), (82, 82)), 2, player.craft_image_list[2]),
-        Grid((83, 83, 83), pygame.Rect((472, 157), (82, 82)), 2, player.craft_image_list[3]),
-        Grid((83, 83, 83), pygame.Rect((637, 117), (82, 82)), 2, player.craft_image_list[4]),
-    ]
-    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 36)
-    crafting_numbers = [
-        Text(font.render(player.craft_number_list[0], False, (255, 255, 255)), 442, 127),
-        Text(font.render(player.craft_number_list[1], False, (255, 255, 255)), 525, 127),
-        Text(font.render(player.craft_number_list[2], False, (255, 255, 255)), 442, 210),
-        Text(font.render(player.craft_number_list[3], False, (255, 255, 255)), 525, 210),
-        Text(font.render(player.craft_number_list[4], False, (255, 255, 255)), 690, 169),
-    ]
-
-    for i in range(len(crafting_grid)):
-        display.blit(crafting_grid[i].img, (crafting_grid[i].rect.x, crafting_grid[i].rect.y))
-        pygame.draw.rect(display, crafting_grid[i].colour, crafting_grid[i].rect, crafting_grid[i].width)
-        if player.craft_list[i] is not None:
-            if player.craft_list[i].enchantments is not None:
-                display.blit(TC_GLINTS[player.craft_list[i].name], (crafting_grid[i].rect.x, crafting_grid[i].rect.y))
-            if player.craft_list[i].durability is not None:
-                RenderDurabilityBar(display, crafting_grid[i].rect.x, crafting_grid[i].rect.y, player.craft_list[i].durability, player.craft_list[i].max_durability)
-    for i in crafting_numbers:
-        display.blit(i.surface, (i.x, i.y))
-    display.blit(arrow_font.render('-->', False, (0, 0, 0)), (562, 142))
-
-def CraftGrid(display):
-    image_render()
-    crafting_grid = [
-        Grid((83, 83, 83), pygame.Rect((195, 75), (82, 82)), 2, player.grid_image_list[0]),
-        Grid((83, 83, 83), pygame.Rect((277, 75), (82, 82)), 2, player.grid_image_list[1]),
-        Grid((83, 83, 83), pygame.Rect((359, 75), (82, 82)), 2, player.grid_image_list[2]),
-        Grid((83, 83, 83), pygame.Rect((195, 157), (82, 82)), 2, player.grid_image_list[3]),
-        Grid((83, 83, 83), pygame.Rect((277, 157), (82, 82)), 2, player.grid_image_list[4]),
-        Grid((83, 83, 83), pygame.Rect((359, 157), (82, 82)), 2, player.grid_image_list[5]),
-        Grid((83, 83, 83), pygame.Rect((195, 239), (82, 82)), 2, player.grid_image_list[6]),
-        Grid((83, 83, 83), pygame.Rect((277, 239), (82, 82)), 2, player.grid_image_list[7]),
-        Grid((83, 83, 83), pygame.Rect((359, 239), (82, 82)), 2, player.grid_image_list[8]),
-        Grid((83, 83, 83), pygame.Rect((570, 157), (82, 82)), 2, player.grid_image_list[9])
-    ]
-    font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 25)
-    title_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 40)
-    arrow_font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftBold-nMK1.otf', 40)
-    crafting_numbers = [
-        Text(font.render(player.grid_number_list[0], False, (255, 255, 255)), 247, 127),
-        Text(font.render(player.grid_number_list[1], False, (255, 255, 255)), 329, 127),
-        Text(font.render(player.grid_number_list[2], False, (255, 255, 255)), 411, 127),
-        Text(font.render(player.grid_number_list[3], False, (255, 255, 255)), 247, 209),
-        Text(font.render(player.grid_number_list[4], False, (255, 255, 255)), 329, 209),
-        Text(font.render(player.grid_number_list[5], False, (255, 255, 255)), 411, 209),
-        Text(font.render(player.grid_number_list[6], False, (255, 255, 255)), 247, 291),
-        Text(font.render(player.grid_number_list[7], False, (255, 255, 255)), 329, 291),
-        Text(font.render(player.grid_number_list[8], False, (255, 255, 255)), 411, 291),
-        Text(font.render(player.grid_number_list[9], False, (255, 255, 255)), 622, 209)
-    ]
-
-    display.blit(title_font.render('Crafting Table', False, (0, 0, 0)), (195, 0))
-    for i in range(len(crafting_grid)):
-        display.blit(crafting_grid[i].img, (crafting_grid[i].rect.x, crafting_grid[i].rect.y))
-        pygame.draw.rect(display, crafting_grid[i].colour, crafting_grid[i].rect, crafting_grid[i].width)
-        if player.grid_list[i] is not None:
-            if player.grid_list[i].enchantments is not None:
-                display.blit(TC_GLINTS[player.grid_list[i].name], (crafting_grid[i].rect.x, crafting_grid[i].rect.y))
-            if player.grid_list[i].durability is not None:
-                RenderDurabilityBar(display, crafting_grid[i].rect.x, crafting_grid[i].rect.y, player.grid_list[i].durability, player.grid_list[i].max_durability)
-    for i in crafting_numbers:
-        display.blit(i.surface, (i.x, i.y))
-    display.blit(arrow_font.render('-->', False, (0, 0, 0)), (465, 180))
-
 def FurnaceInterface(display):
     global FPS
     image_render()
@@ -1279,7 +1208,7 @@ def Main():
                 World.render_chunks(player.left, player.right, player.top, player.bottom)  # Generate list of all chunks that are loaded
                 World.generate_chunks()  # Generate Chunks that are loaded but have not been generated before
                 World.render(world)  # Render all world blocks to world
-                RemoveItem() #Remove Items if their number is 0
+                player.remove_items_from_item_collections() #Remove Items if their number is 0
                 player.hotbar_item = player.inventory.get_hotbar_item(player.selected_hotbar) #Update hotbar item
                 player.render(world)  # Render player and player accessories to world
                 SpeedrunTimer(world, PlayTime)
@@ -1305,10 +1234,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem() #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 ArmourGrid(world) #Render Armour Grid for Player
-                SmallCraftGrid(world) #Render Small Crafting Grid
+                player.small_craft_grid.render(world) #Render Small Crafting Grid
                 Crafting() #Update Small 2x2 Crafting Grid
                 player.holding_item.render(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
@@ -1332,9 +1261,9 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
-                CraftGrid(world) #Render 3x3 Crafting Grid
+                player.big_craft_grid.render(world) #Render 3x3 Crafting Grid
                 GridCraft()  #Update 3x3 Crafting Grid
                 player.holding_item.render(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
@@ -1358,7 +1287,7 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 FurnaceInterface(world) #Render Furnace Interface
                 player.smelt() #Furnace Smelting
@@ -1384,7 +1313,7 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world)  # Render Inventory Grid
                 EnchantingInterface(world) #Render Enchanting Table Interface
                 player.holding_item.render(world)  # Render the item the user is holding
@@ -1409,7 +1338,7 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem() #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 CompressorInterface(world) #Render Compressor Interface
                 player.compress() #Compressing Process
@@ -1435,7 +1364,7 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
-                RemoveItem() #Remove all items with number of 0 or durability of 0
+                player.remove_items_from_item_collections() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 GrindstoneInterface(world) #Render Grindstone Interface
                 player.repair_and_disenchant() #Update repaired/disenchanted item
@@ -1449,7 +1378,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            display.blit(Fonts.MinecraftFont(37).render("Generating Overworld", False, (255, 255, 255)), (180, 225))
+            display.blit(Fonts.RegularMinecraftFont(37).render("Generating Overworld", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             IntialiseDetails()
         if hasGeneratedUnderground == "Generating":
@@ -1457,7 +1386,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            display.blit(Fonts.MinecraftFont(37).render("Generating Underground", False, (255, 255, 255)), (180, 225))
+            display.blit(Fonts.RegularMinecraftFont(37).render("Generating Underground", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             World.undergroundGenerated = True
             World.generateUnderground()
@@ -1515,9 +1444,9 @@ def RenderHoveringItem(display, Type, box):
         elif Type == 'armour grid': #Within Armour Grid
             TextBox(player.armour_list, x, y, font, box, display)
         elif Type == 'small crafting grid' or Type == 'small crafting grid item': #2x2 Crafting
-            TextBox(player.craft_list, x, y, font, box, display)
+            TextBox(player.small_craft_grid.collection, x, y, font, box, display)
         elif Type == 'crafting grid' or Type == 'crafting grid item': #3x3 Crafting
-            TextBox(player.grid_list, x, y, font, box, display)
+            TextBox(player.big_craft_grid.collection, x, y, font, box, display)
         elif Type == 'smelting' or Type == 'smelting item': #Furnace
             TextBox(player.smelting_list, x, y, font, box, display)
         elif Type == 'enchanting': #Enchantment Table
@@ -1606,14 +1535,7 @@ def SelectedBox():
 def ClickItem(Type, box):
     if Type is not None and box is not None:
         if Type == 'inventory grid': #Inventory Grid and Hotbar
-            if player.holding_item.collection[0] is not None and player.inventory.collection[box] is not None:
-                if player.holding_item.collection[0].name == player.inventory.collection[box].name and (player.inventory.collection[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum): #Items can be combined
-                    player.inventory.collection[box].number += player.holding_item.collection[0].number
-                    player.holding_item.collection[0] = None
-                else:
-                    player.holding_item.collection[0], player.inventory.collection[box] = player.inventory.collection[box], player.holding_item.collection[0]
-            else:
-                player.holding_item.collection[0], player.inventory.collection[box] = player.inventory.collection[box], player.holding_item.collection[0]
+            ItemCollection.ClickMoveItem(player.holding_item, 0, player.inventory, box)
         elif Type == 'armour grid': #Armour Grid
             if box == 0: #Tier 1
                 if player.holding_item.collection[0] is not None and player.armour_list[box] is None:
@@ -1649,35 +1571,28 @@ def ClickItem(Type, box):
                 elif player.holding_item.collection[0] is None and player.armour_list[box] is not None:
                     player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
-            if player.holding_item.collection[0] is not None and player.craft_list[box] is not None: #Items can be combined
-                if player.holding_item.collection[0].name == player.craft_list[box].name and (player.craft_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
-                    player.craft_list[box].number += player.holding_item.collection[0].number
-                    player.holding_item.collection[0] = None
-                else:
-                    player.holding_item.collection[0], player.craft_list[box] = player.craft_list[box], player.holding_item.collection[0]
-            else:
-                player.holding_item.collection[0], player.craft_list[box] = player.craft_list[box], player.holding_item.collection[0]
+            ItemCollection.ClickMoveItem(player.holding_item, 0, player.small_craft_grid, box)
         elif Type == 'small crafting grid item': #Collecting the Item Crafted from 2x2 Crafting Grid
-            if player.craft_list[4] is not None:
-                player.inventory.add_item(player.craft_list[4])
+            if player.small_craft_grid.collection[4] is not None:
+                player.inventory.add_item(player.small_craft_grid.collection[4])
                 for i in range(4):
-                    if player.craft_list[i] is not None:
-                        player.craft_list[i].number -= 1
+                    if player.small_craft_grid.collection[i] is not None:
+                        player.small_craft_grid.collection[i].number -= 1
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
-            if player.holding_item.collection[0] is not None and player.grid_list[box] is not None: #Items can be combined
-                if player.holding_item.collection[0].name == player.grid_list[box].name and (player.grid_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
-                    player.grid_list[box].number += player.holding_item.collection[0].number
+            if player.holding_item.collection[0] is not None and player.big_craft_grid.collection[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.big_craft_grid.collection[box].name and (player.big_craft_grid.collection[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.big_craft_grid.collection[box].number += player.holding_item.collection[0].number
                     player.holding_item.collection[0] = None
                 else:
-                    player.holding_item.collection[0], player.grid_list[box] = player.grid_list[box], player.holding_item.collection[0]
+                    player.holding_item.collection[0], player.big_craft_grid.collection[box] = player.big_craft_grid.collection[box], player.holding_item.collection[0]
             else:
-                player.holding_item.collection[0], player.grid_list[box] = player.grid_list[box], player.holding_item.collection[0]
+                player.holding_item.collection[0], player.big_craft_grid.collection[box] = player.big_craft_grid.collection[box], player.holding_item.collection[0]
         elif Type == 'crafting grid item': #Collecting the Item Crafted from 3x3 Crafting Grid
-            if player.grid_list[9] is not None:
-                player.inventory.add_item(player.grid_list[9])
+            if player.big_craft_grid.collection[9] is not None:
+                player.inventory.add_item(player.big_craft_grid.collection[9])
                 for i in range(9):
-                    if player.grid_list[i] is not None:
-                        player.grid_list[i].number -= 1
+                    if player.big_craft_grid.collection[i] is not None:
+                        player.big_craft_grid.collection[i].number -= 1
         elif Type == 'smelting':
             if player.holding_item.collection[0] is not None and player.smelting_list[box] is not None: #Items can be combined
                 if player.holding_item.collection[0].name == player.smelting_list[box].name and (player.smelting_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
@@ -1747,25 +1662,15 @@ def SwitchToHotbar(Type, box, key_pressed):
 def DropItem(Type, box):
     if Type is not None and box is not None and player.holding_item.collection[0] is not None:
         if Type == 'inventory grid': #Inventory Grid
-            if player.inventory.collection[box] is None:
-                player.inventory.collection[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
-                player.holding_item.collection[0].number -= 1
-            elif player.inventory.collection[box] is not None and player.inventory.collection[box].name == player.holding_item.collection[0].name and (player.inventory.collection[box].number + 1 <= player.inventory.collection[box].stackNum):
-                player.inventory.collection[box].number += 1
-                player.holding_item.collection[0].number -= 1
+            ItemCollection.DropMoveItem(player.holding_item, 0, player.inventory, box)
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
-            if player.craft_list[box] is None:
-                player.craft_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
-                player.holding_item.collection[0].number -= 1
-            elif player.craft_list[box] is not None and player.craft_list[box].name == player.holding_item.collection[0].name and (player.craft_list[box].number + 1 <= player.craft_list[box].stackNum):
-                player.craft_list[box].number += 1
-                player.holding_item.collection[0].number -= 1
+            ItemCollection.DropMoveItem(player.holding_item, 0, player.small_craft_grid, box)
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
-            if player.grid_list[box] is None:
-                player.grid_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+            if player.big_craft_grid.collection[box] is None:
+                player.big_craft_grid.collection[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
                 player.holding_item.collection[0].number -= 1
-            elif player.grid_list[box] is not None and player.grid_list[box].name == player.holding_item.collection[0].name and (player.grid_list[box].number + 1 <= player.grid_list[box].stackNum):
-                player.grid_list[box].number += 1
+            elif player.big_craft_grid.collection[box] is not None and player.big_craft_grid.collection[box].name == player.holding_item.collection[0].name and (player.big_craft_grid.collection[box].number + 1 <= player.big_craft_grid.collection[box].stackNum):
+                player.big_craft_grid.collection[box].number += 1
                 player.holding_item.collection[0].number -= 1
         elif Type == 'smelting': #Furnace Interface
             if player.smelting_list[box] is None:
@@ -2009,6 +1914,11 @@ class ItemCollection:
                     if item.durability <= 0:
                         self._collection[idx] = None
     
+    def _generate_render_lists(self):
+        image_list = [none_img if item is None else item.img for item in self._collection]
+        number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in self._collection]
+        return image_list, number_list 
+    
     @staticmethod
     def ClickMoveItem(from_collection, idx1, to_collection, idx2):
         item1, item2 = from_collection.collection[idx1], to_collection.collection[idx2]
@@ -2063,17 +1973,12 @@ class Inventory(ItemCollection):
     def get_hotbar_item(self, selected_hotbar):
         return self._collection[27 + selected_hotbar]
     
-    def __generate_inv_render_lists(self):
-        image_list = [none_img if item is None else item.img for item in self._collection]
-        number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in self._collection]
-        return image_list, number_list 
-    
     def render(self, display):
         global TC_GLINTS
-        images, numbers = self.__generate_inv_render_lists()
+        images, numbers = self._generate_render_lists()
 
         inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, images[i]) for i in range(36)]
-        num_objs = [Text(Fonts.MinecraftFont(25).render(numbers[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
+        num_objs = [Text(Fonts.RegularMinecraftFont(25).render(numbers[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
         
         for idx, obj in enumerate(inventory_slots):
             display.blit(obj.img, (obj.rect.x, obj.rect.y))
@@ -2090,22 +1995,69 @@ class HoldingItem(ItemCollection):
     def __init__(self):
         super().__init__(1)
 
-    def __generate_h_render_vars(self):
-        holding_item_image = none_img if self._collection[0] is None else self._collection[0].img
-        holding_item_number = "" if (self._collection[0] is None or self._collection[0].number == 1) else str(self._collection[0].number)
-        return holding_item_image, holding_item_number
-
     def render(self, display):
-        h_image, h_number = self.__generate_h_render_vars()
+        images, numbers = self._generate_render_lists()
+        h_image, h_number = images[0], numbers[0]
 
         x, y = pygame.mouse.get_pos()
         if self._collection[0] is not None:
             display.blit(h_image, (x, y))
-            display.blit(Fonts.MinecraftFont(25).render(h_number, False, (255, 255, 255)), (x + 52, y + 52))
+            display.blit(Fonts.RegularMinecraftFont(25).render(h_number, False, (255, 255, 255)), (x + 52, y + 52))
             if self._collection[0].enchantments is not None:
                 display.blit(TC_GLINTS[self._collection[0].name], (x, y))
             if self._collection[0].durability is not None:
                 RenderDurabilityBar(display, x, y, self._collection[0].durability, self._collection[0].max_durability) 
+
+class SmallCraftGrid(ItemCollection):
+    def __init__(self):
+        super().__init__(5)
+    
+    def render(self, display):
+        images, numbers = self._generate_render_lists()
+
+        image_objs = [Grid((83, 83, 83), pygame.Rect((390 + 82 * (i % 2), 75 + 82 * (i // 2)), (82, 82)), 2, images[i]) for i in range(4)]
+        image_objs.append(Grid((83, 83, 83), pygame.Rect((637, 117), (82, 82)), 2, images[4]))
+
+        num_objs = [Text(Fonts.RegularMinecraftFont(25).render(numbers[i], False, (255, 255, 255)), 442 + 83 * (i % 2), 127 + 83 * (i // 2)) for i in range(4)]
+        num_objs.append(Text(Fonts.RegularMinecraftFont(25).render(numbers[4], False, (255, 255, 255)), 690, 169))
+
+        for idx, obj in enumerate(image_objs):
+            display.blit(obj.img, (obj.rect.x, obj.rect.y))
+            pygame.draw.rect(display, obj.colour, obj.rect, obj.width)
+            if self._collection[idx] is not None:
+                if self._collection[idx].enchantments is not None:
+                    display.blit(TC_GLINTS[self._collection[idx].name], (obj.rect.x, obj.rect.y))
+                if self._collection[idx].durability is not None:
+                    RenderDurabilityBar(display, obj.rect.x, obj.rect.y, self._collection[idx].durability, self._collection[idx].max_durability)
+        for num_obj in num_objs:
+            display.blit(num_obj.surface, (num_obj.x, num_obj.y))
+        display.blit(Fonts.BoldMinecraftFont(36).render('-->', False, (0, 0, 0)), (562, 142))
+
+class BigCraftGrid(ItemCollection):
+    def __init__(self):
+        super().__init__(10)
+    
+    def render(self, display):
+        images, numbers = self._generate_render_lists()
+
+        image_objs = [Grid((83, 83, 83), pygame.Rect((195 + 82 * (i % 3), 75 + 82 * (i // 3)), (82, 82)), 2, images[i]) for i in range(9)]
+        image_objs.append(Grid((83, 83, 83), pygame.Rect((570, 157), (82, 82)), 2, images[9]))
+
+        num_objs = [Text(Fonts.RegularMinecraftFont(25).render(numbers[i], False, (255, 255, 255)), 247 + 82 * (i % 3), 127 + 82 * (i // 3)) for i in range(9)]
+        num_objs.append(Text(Fonts.RegularMinecraftFont(25).render(numbers[9], False, (255, 255, 255)), 622, 209))
+
+        display.blit(Fonts.RegularMinecraftFont(40).render('Crafting Table', False, (0, 0, 0)), (195, 0))
+        for idx, obj in enumerate(image_objs):
+            display.blit(obj.img, (obj.rect.x, obj.rect.y))
+            pygame.draw.rect(display, obj.colour, obj.rect, obj.width)
+            if self._collection[idx] is not None:
+                if self._collection[idx].enchantments is not None:
+                    display.blit(TC_GLINTS[self._collection[idx].name], (obj.rect.x, obj.rect.y))
+                if self._collection[idx].durability is not None:
+                    RenderDurabilityBar(display, obj.rect.x, obj.rect.y, self._collection[idx].durability, self._collection[idx].max_durability)
+        for num_obj in num_objs:
+            display.blit(num_obj.surface, (num_obj.x, num_obj.y))
+        display.blit(Fonts.BoldMinecraftFont(40).render('-->', False, (0, 0, 0)), (465, 180))
 
 #Player Class and Methods
 class Player:
@@ -2157,12 +2109,8 @@ class Player:
         self.armour_list = [None, None, None, None]
         self.armour_image_list = []
         self.layer_list = []
-        self.craft_list = [None, None, None, None, None]
-        self.craft_image_list = []
-        self.craft_number_list = []
-        self.grid_list = [None, None, None, None, None, None, None, None, None, None]
-        self.grid_image_list = []
-        self.grid_number_list = []
+        self.small_craft_grid = SmallCraftGrid()
+        self.big_craft_grid = BigCraftGrid()
         self.smelting_list = [None, None, None]
         self.smelt_image_list = []
         self.smelt_number_list = []
@@ -2194,6 +2142,22 @@ class Player:
         self.grindstone_list = [None, None, None]
         self.grindstone_image_list = []
         self.grindstone_number_list = []
+    
+    def remove_items_from_item_collections(self):
+        self.inventory.remove_null_items()
+        self.holding_item.remove_null_items()
+        self.small_craft_grid.remove_null_items()
+        self.big_craft_grid.remove_null_items()
+        all_lists = [self.enchanting_list, self.smelting_list, self.compressor_list, self.grindstone_list]
+        for i in all_lists:
+            for j in range(len(i)):
+                if i[j] is not None:
+                    if i[j].number <= 0:
+                        i[j] = None
+                    elif i[j].durability is not None:
+                        if i[j].durability <= 0:
+                            i[j] = None
+        self.enchanting_list, self.smelting_list, self.compressor_list, self.grindstone_list = all_lists
 
     #Method to convert health and hunger integers to image lists
     def health_hunger_update(self):
@@ -2202,14 +2166,12 @@ class Player:
 
     # Hunger mechanism to decrease hunger as distance travelled increases
     def hunger_mechanism(self):
-        global player
         if self.hunger > 0 and self.distance != 0 and self.distance % 256 == 0:
             self.hunger -= 1
-        player.health_hunger_update()
+        self.health_hunger_update()
 
     #Update Health and Regeneration
     def health_update(self):
-        global player
         if self.hunger >= 17 and self.health < 20 and frame % 16 == 0:
             self.hunger -= 1
             self.health += 1
@@ -2224,7 +2186,7 @@ class Player:
                 self.regenerate_start_time += 1
             else:
                 self.regenerate_val = False
-        player.health_hunger_update()
+        self.health_hunger_update()
 
     def collide(self): #Collisions with tiles
         global hasGeneratedUnderground
@@ -3026,16 +2988,16 @@ class Recipe:
     def canCraft(self):
         global player
         for i in range(9):
-            if player.grid_list[i] is not None:
-                if player.grid_list[i].name != self.requirements[i]:
+            if player.big_craft_grid.collection[i] is not None:
+                if player.big_craft_grid.collection[i].name != self.requirements[i]:
                     return False
-            elif player.grid_list[i] != self.requirements[i]:
+            elif player.big_craft_grid.collection[i] != self.requirements[i]:
                 return False
         return True
 
     def craft(self):
-        if player.grid_list[9] != Item(self.result[0], self.result[1], self.result[2], self.result[3]):
-            player.grid_list[9] = Item(self.result[0], self.result[1], self.result[2], self.result[3])
+        if player.big_craft_grid.collection[9] != Item(self.result[0], self.result[1], self.result[2], self.result[3]):
+            player.big_craft_grid.collection[9] = Item(self.result[0], self.result[1], self.result[2], self.result[3])
 
 def IntialiseDetails():
     global hasGeneratedOverworld, display, clock
@@ -3589,6 +3551,260 @@ class InfoBar:
         self.x = x
         self.y = y
 
+def Crafting():
+    if player.mode == "inventory":
+        global craft_list
+        if player.small_craft_grid.collection[0] is not None and player.small_craft_grid.collection[1] is None and player.small_craft_grid.collection[2] is None and player.small_craft_grid.collection[3] is None:
+            if player.small_craft_grid.collection[0].name == 'Oak Log':
+                player.small_craft_grid.collection[4] = Item("Oak Planks", 4, None, None)
+            else:
+                player.small_craft_grid.collection[4] = None
+        elif player.small_craft_grid.collection[0] is not None and player.small_craft_grid.collection[1] is None and player.small_craft_grid.collection[2] is not None and player.small_craft_grid.collection[3] is None:
+            if player.small_craft_grid.collection[0].name == 'Oak Planks' and player.small_craft_grid.collection[2].name == 'Oak Planks':
+                player.small_craft_grid.collection[4] = Item("Stick", 4, None, None)
+            else:
+                player.small_craft_grid.collection[4] = None
+        elif player.small_craft_grid.collection[0] is not None and player.small_craft_grid.collection[1] is not None and player.small_craft_grid.collection[2] is not None and player.small_craft_grid.collection[3] is not None:
+            if player.small_craft_grid.collection[0].name == 'Oak Planks' and player.small_craft_grid.collection[1].name == 'Oak Planks' and player.small_craft_grid.collection[2].name == 'Oak Planks' and player.small_craft_grid.collection[3].name == 'Oak Planks':
+                player.small_craft_grid.collection[4] = Item("Crafting Table", 1, None, None)
+            else:
+                player.small_craft_grid.collection[4] = None
+        elif player.small_craft_grid.collection[0] is not None and player.small_craft_grid.collection[1] is None and player.small_craft_grid.collection[2] is None and player.small_craft_grid.collection[3] is not None:
+            if player.small_craft_grid.collection[0].name == 'Iron Ingot' and player.small_craft_grid.collection[3].name == 'Flint':
+                player.small_craft_grid.collection[4] = Item("Flint and Steel", 1, None, None)
+            else:
+                player.small_craft_grid.collection[4] = None
+        else:
+            player.small_craft_grid.collection[4] = None
+
+def GridCraft():
+    global recipe_list
+    if player.mode == "crafting":
+        for recipe in recipe_list:
+            if recipe.canCraft():
+                recipe.craft()
+                return
+            else:
+                player.big_craft_grid.collection[9] = None
+
+def EnchantUpgrade():
+    global player
+    if player.enchanting_list[2] is not None and player.enchanting_level < 5:
+        if player.enchanting_list[2].name == 'Bookshelf' and player.enchanting_list[2].number > 3:
+            player.enchanting_list[2].number -= 4
+            player.enchanting_level += 1
+            EnchantSet()  # Set Enchants
+
+
+def EnchantSet():
+    global player
+    if player.enchanting_list[0] is not None:
+        if player.enchanting_list[0].enchantments is None:
+            player.level1 = 0
+            player.level2 = 0
+            player.level3 = 0
+            player.optional_enchant2 = None
+            player.optional_enchant3 = None
+            if player.enchanting_level == 0:  # LEVEL 0
+                player.level1 = 0
+                player.level2 = 0
+                player.level3 = RandomNum(0, 1)
+                player.optional_enchant2 = None
+                player.optional_enchant3 = None
+            elif player.enchanting_level == 1:  # LEVEL 1
+                player.level1 = 1
+                player.level2 = RandomNum(1, 2)
+                player.level3 = 2
+                player.optional_enchant2 = None
+                player.optional_enchant3 = None
+            elif player.enchanting_level == 2:  # LEVEL 2
+                player.level1 = 2
+                player.level2 = RandomNum(2, 3)
+                player.level3 = 3
+                player.optional_enchant2 = None
+                player.optional_enchant3 = None
+            elif player.enchanting_level == 3:  # LEVEL 3
+                player.level1 = 3
+                player.level2 = RandomNum(3, 4)
+                player.level3 = 4
+                player.optional_enchant2 = None
+                player.optional_enchant3 = RandomNum(0, 1)
+            elif player.enchanting_level == 4:  # LEVEL 4
+                player.level1 = 4
+                player.level2 = RandomNum(4, 5)
+                player.level3 = 5
+                player.optional_enchant2 = RandomNum(0, 1)
+                player.optional_enchant3 = RandomNum(1, 2)
+            else:  # LEVEL 5
+                player.level1 = RandomNum(4, 5)
+                player.level2 = 5
+                player.level3 = 5
+                player.optional_enchant2 = RandomNum(1, 2)
+                player.optional_enchant3 = RandomNum(2, 3)
+
+            if player.enchanting_list[0].itemType == 'Tier1' or player.enchanting_list[0].itemType == 'Tier2' or player.enchanting_list[0].itemType == 'Tier3':  # Armour
+                player.option_list[0] = f'Protection {player.level1}'
+                player.option_list[1] = f'Protection {player.level2}'
+                player.option_list[2] = f'Protection {player.level3}'
+            elif player.enchanting_list[0].itemType == 'Pickaxe' or player.enchanting_list[0].itemType == 'Axe' or player.enchanting_list[0].itemType == 'Shovel' or player.enchanting_list[0].itemType == 'Hoe':  # Tools
+                player.option_list[0] = f'Efficiency {player.level1}'
+                player.option_list[1] = f'Efficiency {player.level2}'
+                player.option_list[2] = f'Efficiency {player.level3}'
+            for i in range(len(player.option_list)):
+                if player.option_list[i] == 'Protection 0' or player.option_list[i] == 'Efficiency 0':
+                    player.option_list[i] = 'N/A'
+        else:
+            player.option_list[0] = player.option_list[1] = player.option_list[2] = ''
+    else:
+        player.option_list[0] = player.option_list[1] = player.option_list[2] = ''
+
+
+def Enchant1():  # First ENCHANTING BOX (Enchants start at LEVEL 1, MAX 5, no extras)
+    global player
+    if player.enchanting_list[1] is not None:
+        if player.enchanting_list[1].number > 0 and player.experience_levels > 0:  # REQUIRE 1 Lapis + 1 Experience
+            if player.option_list[0] != 'N/A' and player.enchanting_list[0] is not None:
+                player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[0][0:-2], int(player.option_list[0][-1])]], player.enchanting_list[0].number)
+                player.enchanting_list[1].number -= 1
+                player.experience_levels -= 1
+                EnchantSet()  # Remove Enchants
+
+
+def Enchant2():  # Second ENCHANTING BOX (Enchants start at LEVEL 1, MAX 5, extras start LEVEL 4, MAX 2)
+    global player
+    if player.enchanting_list[1] is not None:
+        if player.enchanting_list[1].number > 1 and player.experience_levels > 1:  # REQUIRE 2 Lapis + 2 Experience
+            if player.option_list[1] != 'N/A' and player.enchanting_list[0] is not None:  # Test for None
+                if player.optional_enchant2 is not None:  # Extra enchantment
+                    if player.optional_enchant2 > 0:  # Enchantment level > 0
+                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2],
+                                                                                                                             int(player.option_list[1][-1])], ['Unbreaking', player.optional_enchant2]], player.enchanting_list[0].durability)
+                    else:  # No extra enchantment
+                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2], int(player.option_list[1][-1])]], player.enchanting_list[0].durability)
+                else:
+                    player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2], int(player.option_list[1][-1])]], player.enchanting_list[0].durability)
+                player.enchanting_list[1].number -= 2
+                player.experience_levels -= 2
+                EnchantSet()  # Remove Enchants
+
+
+def Enchant3():  # Third ENCHANTING BOX (ENCHANTS start at LEVEL 0, MAX 5, extras start LEVEL 3, MAX 3)
+    global player
+    if player.enchanting_list[1] is not None:
+        if player.enchanting_list[1].number > 2 and player.experience_levels > 2:  # REQUIRE 3 Lapis + 3 Experience
+            if player.option_list[2] != 'N/A' and player.enchanting_list[0] is not None:  # Test for None
+                if player.optional_enchant3 is not None:  # Extra enchantment
+                    if player.optional_enchant3 > 0:  # Enchantment level > 0
+                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])], ['Unbreaking', player.optional_enchant3]],
+                                                         player.enchanting_list[0].durability)
+                    else:  # No extra enchantment
+                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])]], player.enchanting_list[0].durability)
+                else:  # No extra enchantment
+                    player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])]], player.enchanting_list[0].durability)
+                player.enchanting_list[1].number -= 3
+                player.experience_levels -= 3
+                EnchantSet()  # Remove Enchants
+
+# Render Inventory List to Image and Number List
+def image_render():
+    global pygame_enchant_imgs, player, enchant_name_list, enchant_img_list, enchanting_list, enchanting_image_list, enchanting_number_list, experience, smelting_time, no_fire, fire, fuel_val, inventory_list, image_list, number_list, armour_image_list, craft_image_list, craft_number_list, grid_image_list, grid_number_list, grid_list, smelting_list, smelt_image_list, smelt_number_list, fuel_img
+    player.armour_image_list, player.smelt_image_list, \
+    player.smelt_number_list, player.enchanting_image_list, player.enchanting_number_list, player.compressor_image_list, \
+    player.compressor_number_list, player.layer_list, player.grindstone_image_list, player.grindstone_number_list = \
+        [], [], [], [], [], [], [], [], [], []
+
+    '''Armour Section'''
+
+    # Create armour image list for armour slots
+    for j in player.armour_list:
+        if j is None:  # Set White Background for NONE Slots
+            player.armour_image_list.append(none_img)
+        else:
+            player.armour_image_list.append(j.img)
+
+    for i in player.armour_list:
+        if i is not None:
+            if i.name == 'Tier 1 Iron Plate':
+                player.layer_list.append([(200, 200, 200), 1])
+            elif i.name == 'Tier 2 Iron Plate':
+                player.layer_list.append([(200, 200, 200), 2])
+            elif i.name == 'Tier 3 Iron Plate':
+                player.layer_list.append([(200, 200, 200), 3])
+            elif i.name == 'Tier 1 Diamond Plate':
+                player.layer_list.append([(75, 237, 219), 1])
+            elif i.name == 'Tier 2 Diamond Plate':
+                player.layer_list.append([(75, 237, 219), 2])
+            elif i.name == 'Tier 3 Diamond Plate':
+                player.layer_list.append([(75, 237, 219), 3])
+        else:
+            player.layer_list.append(None)
+
+    '''Smelting Section'''
+
+    # Convert List to Images and Numbers
+    for i in player.smelting_list:
+        if i is None:  # Set White Background for NONE Slots
+            player.smelt_image_list.append(none_img)
+            player.smelt_number_list.append('')
+        else:
+            player.smelt_image_list.append(i.img)
+            player.smelt_number_list.append(str(i.number))
+
+    # Remove Value if Number is 1
+    for i in range(len(player.smelting_list)):
+        if player.smelting_list[i] is not None:
+            if player.smelting_list[i].number == 1:
+                player.smelt_number_list[i] = ''
+
+    '''Enchanting Section'''
+
+    # Convert List to Images and Numbers
+    for i in player.enchanting_list:
+        if i is None:  # Set White Background for NONE Slots
+            player.enchanting_image_list.append(none_img)
+            player.enchanting_number_list.append('')
+        else:
+            player.enchanting_image_list.append(i.img)
+            player.enchanting_number_list.append(str(i.number))
+
+    # Remove Value if Number is 1
+    for i in range(len(player.enchanting_list)):
+        if player.enchanting_list[i] is not None:
+            if player.enchanting_list[i].number == 1:
+                player.enchanting_number_list[i] = ''
+
+    '''Compressing Section'''
+
+    for i in player.compressor_list:
+        if i is None: #Set Background for NONE Slots
+            player.compressor_image_list.append(none_img)
+            player.compressor_number_list.append('')
+        else:
+            player.compressor_image_list.append(i.img)
+            player.compressor_number_list.append(str(i.number))
+
+    # Remove Value if Number is 1
+    for i in range(len(player.compressor_list)):
+        if player.compressor_list[i] is not None:
+            if player.compressor_list[i].number == 1:
+                player.compressor_number_list[i] = ''
+
+    '''Grindstone Section'''
+
+    for i in player.grindstone_list:
+        if i is None:  # Set Background for NONE Slots
+            player.grindstone_image_list.append(none_img)
+            player.grindstone_number_list.append('')
+        else:
+            player.grindstone_image_list.append(i.img)
+            player.grindstone_number_list.append(str(i.number))
+
+    # Remove Value if Number is 1
+    for i in range(len(player.grindstone_list)):
+        if player.grindstone_list[i] is not None:
+            if player.grindstone_list[i].number == 1:
+                player.grindstone_number_list[i] = ''
+
 '''Title Screen Accessory Functions'''
 
 # Select data pack
@@ -3806,310 +4022,6 @@ def title_screen():
 
     # Tkinter main loop
     window.mainloop()
-
-def RemoveItem():
-    global player
-    player.inventory.remove_null_items()
-    player.holding_item.remove_null_items()
-    all_lists = [player.enchanting_list, player.craft_list,
-                 player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list]
-    for i in all_lists:
-        for j in range(len(i)):
-            if i[j] is not None:
-                if i[j].number <= 0:
-                    i[j] = None
-                elif i[j].durability is not None:
-                    if i[j].durability <= 0:
-                        i[j] = None
-    player.enchanting_list, player.craft_list, \
-    player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list = all_lists
-
-def Crafting():
-    if player.mode == "inventory":
-        global craft_list
-        if player.craft_list[0] is not None and player.craft_list[1] is None and player.craft_list[2] is None and player.craft_list[3] is None:
-            if player.craft_list[0].name == 'Oak Log':
-                player.craft_list[4] = Item("Oak Planks", 4, None, None)
-            else:
-                player.craft_list[4] = None
-        elif player.craft_list[0] is not None and player.craft_list[1] is None and player.craft_list[2] is not None and player.craft_list[3] is None:
-            if player.craft_list[0].name == 'Oak Planks' and player.craft_list[2].name == 'Oak Planks':
-                player.craft_list[4] = Item("Stick", 4, None, None)
-            else:
-                player.craft_list[4] = None
-        elif player.craft_list[0] is not None and player.craft_list[1] is not None and player.craft_list[2] is not None and player.craft_list[3] is not None:
-            if player.craft_list[0].name == 'Oak Planks' and player.craft_list[1].name == 'Oak Planks' and player.craft_list[2].name == 'Oak Planks' and player.craft_list[3].name == 'Oak Planks':
-                player.craft_list[4] = Item("Crafting Table", 1, None, None)
-            else:
-                player.craft_list[4] = None
-        elif player.craft_list[0] is not None and player.craft_list[1] is None and player.craft_list[2] is None and player.craft_list[3] is not None:
-            if player.craft_list[0].name == 'Iron Ingot' and player.craft_list[3].name == 'Flint':
-                player.craft_list[4] = Item("Flint and Steel", 1, None, None)
-            else:
-                player.craft_list[4] = None
-        else:
-            player.craft_list[4] = None
-
-def GridCraft():
-    global recipe_list
-    if player.mode == "crafting":
-        for recipe in recipe_list:
-            if recipe.canCraft():
-                recipe.craft()
-                return
-            else:
-                player.grid_list[9] = None
-
-def EnchantUpgrade():
-    global player
-    if player.enchanting_list[2] is not None and player.enchanting_level < 5:
-        if player.enchanting_list[2].name == 'Bookshelf' and player.enchanting_list[2].number > 3:
-            player.enchanting_list[2].number -= 4
-            player.enchanting_level += 1
-            EnchantSet()  # Set Enchants
-
-
-def EnchantSet():
-    global player
-    if player.enchanting_list[0] is not None:
-        if player.enchanting_list[0].enchantments is None:
-            player.level1 = 0
-            player.level2 = 0
-            player.level3 = 0
-            player.optional_enchant2 = None
-            player.optional_enchant3 = None
-            if player.enchanting_level == 0:  # LEVEL 0
-                player.level1 = 0
-                player.level2 = 0
-                player.level3 = RandomNum(0, 1)
-                player.optional_enchant2 = None
-                player.optional_enchant3 = None
-            elif player.enchanting_level == 1:  # LEVEL 1
-                player.level1 = 1
-                player.level2 = RandomNum(1, 2)
-                player.level3 = 2
-                player.optional_enchant2 = None
-                player.optional_enchant3 = None
-            elif player.enchanting_level == 2:  # LEVEL 2
-                player.level1 = 2
-                player.level2 = RandomNum(2, 3)
-                player.level3 = 3
-                player.optional_enchant2 = None
-                player.optional_enchant3 = None
-            elif player.enchanting_level == 3:  # LEVEL 3
-                player.level1 = 3
-                player.level2 = RandomNum(3, 4)
-                player.level3 = 4
-                player.optional_enchant2 = None
-                player.optional_enchant3 = RandomNum(0, 1)
-            elif player.enchanting_level == 4:  # LEVEL 4
-                player.level1 = 4
-                player.level2 = RandomNum(4, 5)
-                player.level3 = 5
-                player.optional_enchant2 = RandomNum(0, 1)
-                player.optional_enchant3 = RandomNum(1, 2)
-            else:  # LEVEL 5
-                player.level1 = RandomNum(4, 5)
-                player.level2 = 5
-                player.level3 = 5
-                player.optional_enchant2 = RandomNum(1, 2)
-                player.optional_enchant3 = RandomNum(2, 3)
-
-            if player.enchanting_list[0].itemType == 'Tier1' or player.enchanting_list[0].itemType == 'Tier2' or player.enchanting_list[0].itemType == 'Tier3':  # Armour
-                player.option_list[0] = f'Protection {player.level1}'
-                player.option_list[1] = f'Protection {player.level2}'
-                player.option_list[2] = f'Protection {player.level3}'
-            elif player.enchanting_list[0].itemType == 'Pickaxe' or player.enchanting_list[0].itemType == 'Axe' or player.enchanting_list[0].itemType == 'Shovel' or player.enchanting_list[0].itemType == 'Hoe':  # Tools
-                player.option_list[0] = f'Efficiency {player.level1}'
-                player.option_list[1] = f'Efficiency {player.level2}'
-                player.option_list[2] = f'Efficiency {player.level3}'
-            for i in range(len(player.option_list)):
-                if player.option_list[i] == 'Protection 0' or player.option_list[i] == 'Efficiency 0':
-                    player.option_list[i] = 'N/A'
-        else:
-            player.option_list[0] = player.option_list[1] = player.option_list[2] = ''
-    else:
-        player.option_list[0] = player.option_list[1] = player.option_list[2] = ''
-
-
-def Enchant1():  # First ENCHANTING BOX (Enchants start at LEVEL 1, MAX 5, no extras)
-    global player
-    if player.enchanting_list[1] is not None:
-        if player.enchanting_list[1].number > 0 and player.experience_levels > 0:  # REQUIRE 1 Lapis + 1 Experience
-            if player.option_list[0] != 'N/A' and player.enchanting_list[0] is not None:
-                player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[0][0:-2], int(player.option_list[0][-1])]], player.enchanting_list[0].number)
-                player.enchanting_list[1].number -= 1
-                player.experience_levels -= 1
-                EnchantSet()  # Remove Enchants
-
-
-def Enchant2():  # Second ENCHANTING BOX (Enchants start at LEVEL 1, MAX 5, extras start LEVEL 4, MAX 2)
-    global player
-    if player.enchanting_list[1] is not None:
-        if player.enchanting_list[1].number > 1 and player.experience_levels > 1:  # REQUIRE 2 Lapis + 2 Experience
-            if player.option_list[1] != 'N/A' and player.enchanting_list[0] is not None:  # Test for None
-                if player.optional_enchant2 is not None:  # Extra enchantment
-                    if player.optional_enchant2 > 0:  # Enchantment level > 0
-                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2],
-                                                                                                                             int(player.option_list[1][-1])], ['Unbreaking', player.optional_enchant2]], player.enchanting_list[0].durability)
-                    else:  # No extra enchantment
-                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2], int(player.option_list[1][-1])]], player.enchanting_list[0].durability)
-                else:
-                    player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[1][0:-2], int(player.option_list[1][-1])]], player.enchanting_list[0].durability)
-                player.enchanting_list[1].number -= 2
-                player.experience_levels -= 2
-                EnchantSet()  # Remove Enchants
-
-
-def Enchant3():  # Third ENCHANTING BOX (ENCHANTS start at LEVEL 0, MAX 5, extras start LEVEL 3, MAX 3)
-    global player
-    if player.enchanting_list[1] is not None:
-        if player.enchanting_list[1].number > 2 and player.experience_levels > 2:  # REQUIRE 3 Lapis + 3 Experience
-            if player.option_list[2] != 'N/A' and player.enchanting_list[0] is not None:  # Test for None
-                if player.optional_enchant3 is not None:  # Extra enchantment
-                    if player.optional_enchant3 > 0:  # Enchantment level > 0
-                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])], ['Unbreaking', player.optional_enchant3]],
-                                                         player.enchanting_list[0].durability)
-                    else:  # No extra enchantment
-                        player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])]], player.enchanting_list[0].durability)
-                else:  # No extra enchantment
-                    player.enchanting_list[0] = Item(player.enchanting_list[0].name, player.enchanting_list[0].number, [[player.option_list[2][0:-2], int(player.option_list[2][-1])]], player.enchanting_list[0].durability)
-                player.enchanting_list[1].number -= 3
-                player.experience_levels -= 3
-                EnchantSet()  # Remove Enchants
-
-# Render Inventory List to Image and Number List
-def image_render():
-    global pygame_enchant_imgs, player, enchant_name_list, enchant_img_list, enchanting_list, enchanting_image_list, enchanting_number_list, experience, smelting_time, no_fire, fire, fuel_val, inventory_list, image_list, number_list, armour_image_list, craft_image_list, craft_number_list, grid_image_list, grid_number_list, grid_list, smelting_list, smelt_image_list, smelt_number_list, fuel_img
-    player.armour_image_list, player.craft_image_list, \
-    player.craft_number_list, player.grid_image_list, player.grid_number_list, player.smelt_image_list, \
-    player.smelt_number_list, player.enchanting_image_list, player.enchanting_number_list, player.compressor_image_list, \
-    player.compressor_number_list, player.layer_list, player.grindstone_image_list, player.grindstone_number_list = \
-        [], [], [], [], [], [], [], [], [], [], [], [], [], []
-
-    '''Armour Section'''
-
-    # Create armour image list for armour slots
-    for j in player.armour_list:
-        if j is None:  # Set White Background for NONE Slots
-            player.armour_image_list.append(none_img)
-        else:
-            player.armour_image_list.append(j.img)
-
-    for i in player.armour_list:
-        if i is not None:
-            if i.name == 'Tier 1 Iron Plate':
-                player.layer_list.append([(200, 200, 200), 1])
-            elif i.name == 'Tier 2 Iron Plate':
-                player.layer_list.append([(200, 200, 200), 2])
-            elif i.name == 'Tier 3 Iron Plate':
-                player.layer_list.append([(200, 200, 200), 3])
-            elif i.name == 'Tier 1 Diamond Plate':
-                player.layer_list.append([(75, 237, 219), 1])
-            elif i.name == 'Tier 2 Diamond Plate':
-                player.layer_list.append([(75, 237, 219), 2])
-            elif i.name == 'Tier 3 Diamond Plate':
-                player.layer_list.append([(75, 237, 219), 3])
-        else:
-            player.layer_list.append(None)
-
-    '''Crafting Section (2x2)'''
-
-    for i in player.craft_list:
-        if i is None:  # Set White Background for NONE Slots
-            player.craft_image_list.append(none_img)
-            player.craft_number_list.append('')
-        else:
-            player.craft_image_list.append(i.img)
-            player.craft_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for j in range(len(player.craft_list)):
-        if player.craft_list[j] is not None:
-            if player.craft_list[j].number == 1:
-                player.craft_number_list[j] = ''
-
-    '''Crafting Section (3x3)'''
-
-    for i in player.grid_list:
-        if i is None:  # Set White Background for NONE Slots
-            player.grid_image_list.append(none_img)
-            player.grid_number_list.append('')
-        else:
-            player.grid_image_list.append(i.img)
-            player.grid_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.grid_list)):
-        if player.grid_list[i] is not None:
-            if player.grid_list[i].number == 1:
-                player.grid_number_list[i] = ''
-
-    '''Smelting Section'''
-
-    # Convert List to Images and Numbers
-    for i in player.smelting_list:
-        if i is None:  # Set White Background for NONE Slots
-            player.smelt_image_list.append(none_img)
-            player.smelt_number_list.append('')
-        else:
-            player.smelt_image_list.append(i.img)
-            player.smelt_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.smelting_list)):
-        if player.smelting_list[i] is not None:
-            if player.smelting_list[i].number == 1:
-                player.smelt_number_list[i] = ''
-
-    '''Enchanting Section'''
-
-    # Convert List to Images and Numbers
-    for i in player.enchanting_list:
-        if i is None:  # Set White Background for NONE Slots
-            player.enchanting_image_list.append(none_img)
-            player.enchanting_number_list.append('')
-        else:
-            player.enchanting_image_list.append(i.img)
-            player.enchanting_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.enchanting_list)):
-        if player.enchanting_list[i] is not None:
-            if player.enchanting_list[i].number == 1:
-                player.enchanting_number_list[i] = ''
-
-    '''Compressing Section'''
-
-    for i in player.compressor_list:
-        if i is None: #Set Background for NONE Slots
-            player.compressor_image_list.append(none_img)
-            player.compressor_number_list.append('')
-        else:
-            player.compressor_image_list.append(i.img)
-            player.compressor_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.compressor_list)):
-        if player.compressor_list[i] is not None:
-            if player.compressor_list[i].number == 1:
-                player.compressor_number_list[i] = ''
-
-    '''Grindstone Section'''
-
-    for i in player.grindstone_list:
-        if i is None:  # Set Background for NONE Slots
-            player.grindstone_image_list.append(none_img)
-            player.grindstone_number_list.append('')
-        else:
-            player.grindstone_image_list.append(i.img)
-            player.grindstone_number_list.append(str(i.number))
-
-    # Remove Value if Number is 1
-    for i in range(len(player.grindstone_list)):
-        if player.grindstone_list[i] is not None:
-            if player.grindstone_list[i].number == 1:
-                player.grindstone_number_list[i] = ''
 
 if __name__ in "__main__":
     title_screen()
