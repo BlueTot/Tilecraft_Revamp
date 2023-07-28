@@ -894,25 +894,6 @@ def RenderDurabilityBar(display, x, y, durability, max_durability):
         pygame.draw.rect(display, (0, 0, 0), (x + 5, y + 72, 72, 5))
         pygame.draw.rect(display, colour, (x + 5, y + 72, math.floor(72 * durability / max_durability), 5))
 
-# #Inventory Grid (36 Slots)
-# def InventoryGrid(display):
-#     global TC_GLINTS, item_name_list
-
-#     image_render()
-#     inventory_slots = [Grid((83, 83, 83), pygame.Rect((82 * (i % 9), 390 + 82 * int(i // 9)), (82, 82)), 2, player.image_list[i]) for i in range(36)]
-#     numbers = [Text(Fonts.MinecraftFont(25).render(player.number_list[i], False, (255, 255, 255)), 52 + 82 * (i % 9), 442 + 82 * int(i // 9)) for i in range(36)]
-    
-#     for i in range(len(inventory_slots)):
-#         display.blit(inventory_slots[i].img, (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
-#         pygame.draw.rect(display, inventory_slots[i].colour, inventory_slots[i].rect, inventory_slots[i].width)
-#         if player.inventory.inventory_list[i] is not None:
-#             if player.inventory.inventory_list[i].enchantments is not None:
-#                 display.blit(TC_GLINTS[player.inventory.inventory_list[i].name], (inventory_slots[i].rect.x, inventory_slots[i].rect.y))
-#             if player.inventory.inventory_list[i].durability is not None:
-#                 RenderDurabilityBar(display, inventory_slots[i].rect.x, inventory_slots[i].rect.y, player.inventory.inventory_list[i].durability, player.inventory.inventory_list[i].max_durability)
-#     for i in numbers:
-#         display.blit(i.surface, (i.x, i.y))
-
 #Armour Grid for Player
 def ArmourGrid(display):
     image_render()
@@ -1324,11 +1305,11 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 ArmourGrid(world) #Render Armour Grid for Player
                 SmallCraftGrid(world) #Render Small Crafting Grid
                 Crafting() #Update Small 2x2 Crafting Grid
-                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1351,10 +1332,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 CraftGrid(world) #Render 3x3 Crafting Grid
                 GridCraft()  #Update 3x3 Crafting Grid
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1377,10 +1358,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 FurnaceInterface(world) #Render Furnace Interface
                 player.smelt() #Furnace Smelting
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1403,9 +1384,9 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world)  # Render Inventory Grid
                 EnchantingInterface(world) #Render Enchanting Table Interface
-                RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1428,10 +1409,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 CompressorInterface(world) #Render Compressor Interface
                 player.compress() #Compressing Process
-                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1454,10 +1435,10 @@ def Main():
 
                 display.fill((0, 0, 0))
                 world.fill((211, 211, 211))
+                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world) #Render Inventory Grid
                 GrindstoneInterface(world) #Render Grindstone Interface
                 player.repair_and_disenchant() #Update repaired/disenchanted item
-                RemoveItem() #Remove all items with number of 0 or durability of 0
                 player.inventory.render_holding_item(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
@@ -1468,8 +1449,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
-            display.blit(font.render("Generating Overworld", False, (255, 255, 255)), (180, 225))
+            display.blit(Fonts.MinecraftFont(37).render("Generating Overworld", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             IntialiseDetails()
         if hasGeneratedUnderground == "Generating":
@@ -1477,8 +1457,7 @@ def Main():
             for i in range(0, 750, 32):
                 for j in range(0, 750, 32):
                     display.blit(loading, (i, j))
-            font = pygame.font.Font('images_v2023_revamp/minecraft-font/MinecraftRegular-Bmg3.otf', 37)
-            display.blit(font.render("Generating Underground", False, (255, 255, 255)), (180, 225))
+            display.blit(Fonts.MinecraftFont(37).render("Generating Underground", False, (255, 255, 255)), (180, 225))
             pygame.display.flip()
             World.undergroundGenerated = True
             World.generateUnderground()
@@ -1488,19 +1467,6 @@ def Main():
             if RandomNum(1, 500) == 1:
                 pygame.mixer.music.load("images_v2023_revamp/music/song" + str(random.choice([3, 5, 7, 11, 12, 13, 14, 18])) + ".mp3")
                 pygame.mixer.music.play()
-
-
-#Render the Item the User is Holding
-def RenderHoldingItem(display):
-    global TC_GLINTS
-    x, y = pygame.mouse.get_pos()
-    if player.inventory.holding_item is not None:
-        display.blit(player.inventory.holding_item_image, (x, y))
-        display.blit(Fonts.MinecraftFont(25).render(player.inventory.holding_item_number, False, (255, 255, 255)), (x + 52, y + 52))
-        if player.inventory.holding_item.enchantments is not None:
-            display.blit(TC_GLINTS[player.inventory.holding_item.name], (x, y))
-        if player.inventory.holding_item.durability is not None:
-            RenderDurabilityBar(display, x, y, player.inventory.holding_item.durability, player.inventory.holding_item.max_durability)
 
 #Convert Numbers to Roman Numerals
 def DecimalToRoman(num):
@@ -1638,7 +1604,6 @@ def SelectedBox():
 
 #Move items using drag and drop
 def ClickItem(Type, box):
-    global small_crafting_grid
     if Type is not None and box is not None:
         if Type == 'inventory grid': #Inventory Grid and Hotbar
             if player.inventory.holding_item is not None and player.inventory.inventory_list[box] is not None:
