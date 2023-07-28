@@ -1186,18 +1186,18 @@ def Main():
                                     if player.hotbar_item.itemType == "Food":
                                         if player.hunger < 20:
                                             if player.hotbar_item.name == 'Bread':
-                                                index = player.inventory.inventory_list.index(player.hotbar_item)
-                                                player.inventory.inventory_list[index].number -= 1
+                                                index = player.inventory.collection.index(player.hotbar_item)
+                                                player.inventory.collection[index].number -= 1
                                                 player.hunger += 5
                                             # GOLDEN CARROT
                                             elif player.hotbar_item.name == 'Golden Carrot':
-                                                index = player.inventory.inventory_list.index(player.hotbar_item)
-                                                player.inventory.inventory_list[index].number -= 1
+                                                index = player.inventory.collection.index(player.hotbar_item)
+                                                player.inventory.collection[index].number -= 1
                                                 player.hunger += 6
                                             # GOLDEN APPLE
                                             elif player.hotbar_item.name == 'Golden Apple':
-                                                index = player.inventory.inventory_list.index(player.hotbar_item)
-                                                player.inventory.inventory_list[index].number -= 1
+                                                index = player.inventory.collection.index(player.hotbar_item)
+                                                player.inventory.collection[index].number -= 1
                                                 player.hunger += 5
                                                 player.regenerate_start_time = 0
                                                 player.regenerate_val = True
@@ -1283,7 +1283,7 @@ def Main():
                 player.hotbar_item = player.inventory.get_hotbar_item(player.selected_hotbar) #Update hotbar item
                 player.render(world)  # Render player and player accessories to world
                 SpeedrunTimer(world, PlayTime)
-                advancements_update(player.advancements, player.inventory.inventory_list, player.armour_list, player.dimension)  # Update Advancements
+                advancements_update(player.advancements, player.inventory.collection, player.armour_list, player.dimension)  # Update Advancements
                 screen.render(world) #Render Text Screen
 
             elif player.mode == 'inventory':
@@ -1310,7 +1310,7 @@ def Main():
                 ArmourGrid(world) #Render Armour Grid for Player
                 SmallCraftGrid(world) #Render Small Crafting Grid
                 Crafting() #Update Small 2x2 Crafting Grid
-                player.inventory.render_holding_item(world) #Render the item the user is holding
+                player.holding_item.render(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'crafting':
@@ -1336,7 +1336,7 @@ def Main():
                 player.inventory.render(world) #Render Inventory Grid
                 CraftGrid(world) #Render 3x3 Crafting Grid
                 GridCraft()  #Update 3x3 Crafting Grid
-                player.inventory.render_holding_item(world)  # Render the item the user is holding
+                player.holding_item.render(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'smelting':
@@ -1362,7 +1362,7 @@ def Main():
                 player.inventory.render(world) #Render Inventory Grid
                 FurnaceInterface(world) #Render Furnace Interface
                 player.smelt() #Furnace Smelting
-                player.inventory.render_holding_item(world)  # Render the item the user is holding
+                player.holding_item.render(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'enchanting':
@@ -1387,7 +1387,7 @@ def Main():
                 RemoveItem()  #Remove all items with number of 0 or durability of 0
                 player.inventory.render(world)  # Render Inventory Grid
                 EnchantingInterface(world) #Render Enchanting Table Interface
-                player.inventory.render_holding_item(world)  # Render the item the user is holding
+                player.holding_item.render(world)  # Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'compressing':
@@ -1413,7 +1413,7 @@ def Main():
                 player.inventory.render(world) #Render Inventory Grid
                 CompressorInterface(world) #Render Compressor Interface
                 player.compress() #Compressing Process
-                player.inventory.render_holding_item(world) #Render the item the user is holding
+                player.holding_item.render(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             elif player.mode == 'repairing and disenchanting':
@@ -1439,7 +1439,7 @@ def Main():
                 player.inventory.render(world) #Render Inventory Grid
                 GrindstoneInterface(world) #Render Grindstone Interface
                 player.repair_and_disenchant() #Update repaired/disenchanted item
-                player.inventory.render_holding_item(world) #Render the item the user is holding
+                player.holding_item.render(world) #Render the item the user is holding
                 RenderHoveringItem(world, Type, box) #Render Item Name
 
             display.blit(world, (0, 0))  # Render map to display
@@ -1511,7 +1511,7 @@ def RenderHoveringItem(display, Type, box):
     font = pygame.font.Font('images_v2023_revamp/monofur/monof55.ttf', 22)
     if box is not None:
         if Type == 'inventory grid': #Within 36 Inventory Slots
-            TextBox(player.inventory.inventory_list, x, y, font, box, display)
+            TextBox(player.inventory.collection, x, y, font, box, display)
         elif Type == 'armour grid': #Within Armour Grid
             TextBox(player.armour_list, x, y, font, box, display)
         elif Type == 'small crafting grid' or Type == 'small crafting grid item': #2x2 Crafting
@@ -1606,57 +1606,57 @@ def SelectedBox():
 def ClickItem(Type, box):
     if Type is not None and box is not None:
         if Type == 'inventory grid': #Inventory Grid and Hotbar
-            if player.inventory.holding_item is not None and player.inventory.inventory_list[box] is not None:
-                if player.inventory.holding_item.name == player.inventory.inventory_list[box].name and (player.inventory.inventory_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum): #Items can be combined
-                    player.inventory.inventory_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.inventory.collection[box] is not None:
+                if player.holding_item.collection[0].name == player.inventory.collection[box].name and (player.inventory.collection[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum): #Items can be combined
+                    player.inventory.collection[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.inventory.collection[box] = player.inventory.collection[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.inventory.collection[box] = player.inventory.collection[box], player.holding_item.collection[0]
         elif Type == 'armour grid': #Armour Grid
             if box == 0: #Tier 1
-                if player.inventory.holding_item is not None and player.armour_list[box] is None:
-                    if player.inventory.holding_item.itemType == 'Tier1':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
-                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
-                    if player.inventory.holding_item.itemType == 'Tier1' and player.armour_list[box].itemType == 'Tier1':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                if player.holding_item.collection[0] is not None and player.armour_list[box] is None:
+                    if player.holding_item.collection[0].itemType == 'Tier1':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is None and player.armour_list[box] is not None:
+                    player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is not None and player.armour_list[box] is not None:
+                    if player.holding_item.collection[0].itemType == 'Tier1' and player.armour_list[box].itemType == 'Tier1':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
             elif box == 1: #Tier 2
-                if player.inventory.holding_item is not None and player.armour_list[box] is None:
-                    if player.inventory.holding_item.itemType == 'Tier2':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
-                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
-                    if player.inventory.holding_item.itemType == 'Tier2' and player.armour_list[box].itemType == 'Tier2':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                if player.holding_item.collection[0] is not None and player.armour_list[box] is None:
+                    if player.holding_item.collection[0].itemType == 'Tier2':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is None and player.armour_list[box] is not None:
+                    player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is not None and player.armour_list[box] is not None:
+                    if player.holding_item.collection[0].itemType == 'Tier2' and player.armour_list[box].itemType == 'Tier2':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
             elif box == 2: #Tier 3
-                if player.inventory.holding_item is not None and player.armour_list[box] is None:
-                    if player.inventory.holding_item.itemType == 'Tier3':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
-                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is not None and player.armour_list[box] is not None:
-                    if player.inventory.holding_item.itemType == 'Tier3' and player.armour_list[box].itemType == 'Tier3':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                if player.holding_item.collection[0] is not None and player.armour_list[box] is None:
+                    if player.holding_item.collection[0].itemType == 'Tier3':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is None and player.armour_list[box] is not None:
+                    player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is not None and player.armour_list[box] is not None:
+                    if player.holding_item.collection[0].itemType == 'Tier3' and player.armour_list[box].itemType == 'Tier3':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
             elif box == 3: #Shield
-                if player.inventory.holding_item is not None and player.armour_list[box] is None:
-                    if player.inventory.holding_item.itemType == 'Shield':
-                        player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
-                elif player.inventory.holding_item is None and player.armour_list[box] is not None:
-                    player.inventory.holding_item, player.armour_list[box] = player.armour_list[box], player.inventory.holding_item
+                if player.holding_item.collection[0] is not None and player.armour_list[box] is None:
+                    if player.holding_item.collection[0].itemType == 'Shield':
+                        player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
+                elif player.holding_item.collection[0] is None and player.armour_list[box] is not None:
+                    player.holding_item.collection[0], player.armour_list[box] = player.armour_list[box], player.holding_item.collection[0]
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
-            if player.inventory.holding_item is not None and player.craft_list[box] is not None: #Items can be combined
-                if player.inventory.holding_item.name == player.craft_list[box].name and (player.craft_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.craft_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.craft_list[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.craft_list[box].name and (player.craft_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.craft_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.craft_list[box] = player.craft_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.craft_list[box] = player.craft_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.craft_list[box] = player.craft_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.craft_list[box] = player.craft_list[box], player.holding_item.collection[0]
         elif Type == 'small crafting grid item': #Collecting the Item Crafted from 2x2 Crafting Grid
             if player.craft_list[4] is not None:
                 player.inventory.add_item(player.craft_list[4])
@@ -1664,14 +1664,14 @@ def ClickItem(Type, box):
                     if player.craft_list[i] is not None:
                         player.craft_list[i].number -= 1
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
-            if player.inventory.holding_item is not None and player.grid_list[box] is not None: #Items can be combined
-                if player.inventory.holding_item.name == player.grid_list[box].name and (player.grid_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.grid_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.grid_list[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.grid_list[box].name and (player.grid_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.grid_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.grid_list[box] = player.grid_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.grid_list[box] = player.grid_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.grid_list[box] = player.grid_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.grid_list[box] = player.grid_list[box], player.holding_item.collection[0]
         elif Type == 'crafting grid item': #Collecting the Item Crafted from 3x3 Crafting Grid
             if player.grid_list[9] is not None:
                 player.inventory.add_item(player.grid_list[9])
@@ -1679,26 +1679,26 @@ def ClickItem(Type, box):
                     if player.grid_list[i] is not None:
                         player.grid_list[i].number -= 1
         elif Type == 'smelting':
-            if player.inventory.holding_item is not None and player.smelting_list[box] is not None: #Items can be combined
-                if player.inventory.holding_item.name == player.smelting_list[box].name and (player.smelting_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.smelting_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.smelting_list[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.smelting_list[box].name and (player.smelting_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.smelting_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.smelting_list[box] = player.smelting_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.smelting_list[box] = player.smelting_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.smelting_list[box] = player.smelting_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.smelting_list[box] = player.smelting_list[box], player.holding_item.collection[0]
         elif Type == 'smelting item': #Collecting the Item Smelted from Furnace
             player.inventory.add_item(player.smelting_list[2])
             player.smelting_list[2] = None
         elif Type == 'enchanting':
-            if player.inventory.holding_item is not None and player.enchanting_list[box] is not None: #Items can be combined
-                if player.inventory.holding_item.name == player.enchanting_list[box].name and (player.enchanting_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.enchanting_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.enchanting_list[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.enchanting_list[box].name and (player.enchanting_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.enchanting_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.enchanting_list[box] = player.enchanting_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.enchanting_list[box] = player.enchanting_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.enchanting_list[box] = player.enchanting_list[box], player.holding_item.collection[0]
             if box == 0:
                 EnchantSet()
         elif Type == 'upgrade':
@@ -1710,26 +1710,26 @@ def ClickItem(Type, box):
         elif Type == 'option3':
             Enchant3()
         elif Type == 'compressing':
-            if player.inventory.holding_item is not None and player.compressor_list[box] is not None: #Items can be combined
-                if player.inventory.holding_item.name == player.compressor_list[box].name and (player.compressor_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.compressor_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.compressor_list[box] is not None: #Items can be combined
+                if player.holding_item.collection[0].name == player.compressor_list[box].name and (player.compressor_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.compressor_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.compressor_list[box] = player.compressor_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.compressor_list[box] = player.compressor_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.compressor_list[box] = player.compressor_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.compressor_list[box] = player.compressor_list[box], player.holding_item.collection[0]
         elif Type == 'compressing item':
             player.inventory.add_item(player.compressor_list[1])
             player.compressor_list[1] = None
         elif Type == 'repairing and disenchanting':
-            if player.inventory.holding_item is not None and player.grindstone_list[box] is not None:  # Items can be combined
-                if player.inventory.holding_item.name == player.grindstone_list[box].name and (player.grindstone_list[box].number + player.inventory.holding_item.number <= player.inventory.holding_item.stackNum):
-                    player.grindstone_list[box].number += player.inventory.holding_item.number
-                    player.inventory.holding_item = None
+            if player.holding_item.collection[0] is not None and player.grindstone_list[box] is not None:  # Items can be combined
+                if player.holding_item.collection[0].name == player.grindstone_list[box].name and (player.grindstone_list[box].number + player.holding_item.collection[0].number <= player.holding_item.collection[0].stackNum):
+                    player.grindstone_list[box].number += player.holding_item.collection[0].number
+                    player.holding_item.collection[0] = None
                 else:
-                    player.inventory.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.inventory.holding_item
+                    player.holding_item.collection[0], player.grindstone_list[box] = player.grindstone_list[box], player.holding_item.collection[0]
             else:
-                player.inventory.holding_item, player.grindstone_list[box] = player.grindstone_list[box], player.inventory.holding_item
+                player.holding_item.collection[0], player.grindstone_list[box] = player.grindstone_list[box], player.holding_item.collection[0]
         elif Type == 'repairing and disenchanting item':
             player.inventory.add_item(player.grindstone_list[2])
             if player.grindstone_list[0] is not None and player.grindstone_list[1] is None:
@@ -1741,60 +1741,60 @@ def ClickItem(Type, box):
 def SwitchToHotbar(Type, box, key_pressed):
     if Type is not None and box is not None:
         if Type == 'inventory grid':
-            player.inventory.inventory_list[key_pressed + 26], player.inventory.inventory_list[box] = player.inventory.inventory_list[box], player.inventory.inventory_list[key_pressed + 26]
+            player.inventory.collection[key_pressed + 26], player.inventory.collection[box] = player.inventory.collection[box], player.inventory.collection[key_pressed + 26]
 
 #Right Click - Drop Item / Separate Item into two different stacks
 def DropItem(Type, box):
-    if Type is not None and box is not None and player.inventory.holding_item is not None:
+    if Type is not None and box is not None and player.holding_item.collection[0] is not None:
         if Type == 'inventory grid': #Inventory Grid
-            if player.inventory.inventory_list[box] is None:
-                player.inventory.inventory_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.inventory.inventory_list[box] is not None and player.inventory.inventory_list[box].name == player.inventory.holding_item.name and (player.inventory.inventory_list[box].number + 1 <= player.inventory.inventory_list[box].stackNum):
-                player.inventory.inventory_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+            if player.inventory.collection[box] is None:
+                player.inventory.collection[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.inventory.collection[box] is not None and player.inventory.collection[box].name == player.holding_item.collection[0].name and (player.inventory.collection[box].number + 1 <= player.inventory.collection[box].stackNum):
+                player.inventory.collection[box].number += 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'small crafting grid': #Small 2x2 Crafting Grid
             if player.craft_list[box] is None:
-                player.craft_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.craft_list[box] is not None and player.craft_list[box].name == player.inventory.holding_item.name and (player.craft_list[box].number + 1 <= player.craft_list[box].stackNum):
+                player.craft_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.craft_list[box] is not None and player.craft_list[box].name == player.holding_item.collection[0].name and (player.craft_list[box].number + 1 <= player.craft_list[box].stackNum):
                 player.craft_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'crafting grid': #Big 3x3 Crafting Grid
             if player.grid_list[box] is None:
-                player.grid_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.grid_list[box] is not None and player.grid_list[box].name == player.inventory.holding_item.name and (player.grid_list[box].number + 1 <= player.grid_list[box].stackNum):
+                player.grid_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.grid_list[box] is not None and player.grid_list[box].name == player.holding_item.collection[0].name and (player.grid_list[box].number + 1 <= player.grid_list[box].stackNum):
                 player.grid_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'smelting': #Furnace Interface
             if player.smelting_list[box] is None:
-                player.smelting_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.smelting_list[box] is not None and player.smelting_list[box].name == player.inventory.holding_item.name and (player.smelting_list[box].number + 1 <= player.smelting_list[box].stackNum):
+                player.smelting_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.smelting_list[box] is not None and player.smelting_list[box].name == player.holding_item.collection[0].name and (player.smelting_list[box].number + 1 <= player.smelting_list[box].stackNum):
                 player.smelting_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'enchanting': #Enchanting Table Interface
             if player.enchanting_list[box] is None:
-                player.enchanting_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.enchanting_list[box] is not None and player.enchanting_list[box].name == player.inventory.holding_item.name and (player.enchanting_list[box].number + 1 <= player.enchanting_list[box].stackNum):
+                player.enchanting_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.enchanting_list[box] is not None and player.enchanting_list[box].name == player.holding_item.collection[0].name and (player.enchanting_list[box].number + 1 <= player.enchanting_list[box].stackNum):
                 player.enchanting_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'compressing': #Compressor Interface
             if player.compressor_list[box] is None:
-                player.compressor_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
-                player.inventory.holding_item.number -= 1
-            elif player.compressor_list[box] is not None and player.compressor_list[box].name == player.inventory.holding_item.name and (player.compressor_list[box].number + 1 <= player.compressor_list[box].stackNum):
+                player.compressor_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
+                player.holding_item.collection[0].number -= 1
+            elif player.compressor_list[box] is not None and player.compressor_list[box].name == player.holding_item.collection[0].name and (player.compressor_list[box].number + 1 <= player.compressor_list[box].stackNum):
                 player.compressor_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
         elif Type == 'repairing and disenchanting': #Grindstone Interface
             if player.grindstone_list[box] is None:
-                player.grindstone_list[box] = Item(player.inventory.holding_item.name, 1, player.inventory.holding_item.enchantments, player.inventory.holding_item.durability)
+                player.grindstone_list[box] = Item(player.holding_item.collection[0].name, 1, player.holding_item.collection[0].enchantments, player.holding_item.collection[0].durability)
                 player.grindstone.number -= 1
-            elif player.grindstone_list[box] is not None and player.grindstone_list[box].name == player.inventory.holding_item.name and (player.grindstone_list[box].number + 1 <= player.grindstone_list[box].stackNum):
+            elif player.grindstone_list[box] is not None and player.grindstone_list[box].name == player.holding_item.collection[0].name and (player.grindstone_list[box].number + 1 <= player.grindstone_list[box].stackNum):
                 player.grindstone_list[box].number += 1
-                player.inventory.holding_item.number -= 1
+                player.holding_item.collection[0].number -= 1
 
 class Screen:
     def __init__(self):
@@ -1840,7 +1840,7 @@ class Screen:
             index = player.selected_hotbar
             item = enchant(self.typingText)
             if item is not None:
-                player.inventory.inventory_list[27 + index] = item
+                player.inventory.collection[27 + index] = item
             self.foretext = ''
         elif self.foretext == "Experience Level: ":
             experience(self.typingText)
@@ -1996,6 +1996,10 @@ class ItemCollection:
     def __init__(self, size):
         self._collection = [None]*size
     
+    @property
+    def collection(self):
+        return self._collection
+    
     def remove_null_items(self):
         for idx, item in enumerate(self._collection):
             if item is not None:
@@ -2004,32 +2008,35 @@ class ItemCollection:
                 elif item.durability is not None:
                     if item.durability <= 0:
                         self._collection[idx] = None
+    
+    @staticmethod
+    def ClickMoveItem(from_collection, idx1, to_collection, idx2):
+        item1, item2 = from_collection.collection[idx1], to_collection.collection[idx2]
+        if item1 is not None and item2 is not None:
+            if item1.name == item2.name and (item2.number + item1.number <= item1.stackNum): #Items can be combined
+                to_collection.collection[idx2].number += item1.number
+                from_collection.collection[idx1] = None
+                return
+        from_collection.collection[idx1], to_collection.collection[idx2] = to_collection.collection[idx2], from_collection.collection[idx1]
+
+    @staticmethod
+    def DropMoveItem(from_collection, idx1, to_collection, idx2):
+        item1, item2 = from_collection.collection[idx1], to_collection.collection[idx2]
+        if item2 is None:
+            to_collection.collection[idx2] = Item(item1.name, 1, item1.enchantments, item1.durability)
+            from_collection.collection[idx1].number -= 1
+        elif item2 is not None and item2.name == item1.name and (item2.number + 1 <= item2.stackNum):
+            to_collection.collection[idx2].number += 1
+            from_collection.collection[idx1].number -= 1
 
 # Player Inventory
 class Inventory(ItemCollection):
     def __init__(self):
         super().__init__(36)
         self.holding_item = None
-    
-    @property
-    def inventory_list(self):
-        return self._collection
 
-    # weighted none index for inventory
-    def __weighted_none_index(self):
+    def __weighted_none_index(self):  # weighted none index for inventory
         return ((self._collection[-9:] + self._collection[:27]).index(None) + 27) % 36
-
-    def __remove_null_holding_item(self):
-        if self.holding_item is not None:
-            if self.holding_item.number <= 0:
-                self.holding_item = None
-            elif self.holding_item.durability is not None:
-                if self.holding_item.durability <= 0:
-                    self.holding_item = None
-    
-    def remove_null_items(self):
-        super().remove_null_items()
-        self.__remove_null_holding_item()
     
     def add_item(self, item):  # add items to inventory
         global screen
@@ -2060,11 +2067,6 @@ class Inventory(ItemCollection):
         image_list = [none_img if item is None else item.img for item in self._collection]
         number_list = ["" if (item is None or item.number == 1) else str(item.number) for item in self._collection]
         return image_list, number_list 
-
-    def __generate_h_render_vars(self):
-        holding_item_image = none_img if self.holding_item is None else self.holding_item.img
-        holding_item_number = "" if (self.holding_item is None or self.holding_item.number == 1) else str(self.holding_item.number)
-        return holding_item_image, holding_item_number
     
     def render(self, display):
         global TC_GLINTS
@@ -2083,18 +2085,27 @@ class Inventory(ItemCollection):
                     RenderDurabilityBar(display, obj.rect.x, obj.rect.y, self._collection[idx].durability, self._collection[idx].max_durability)
         for num_obj in num_objs:
             display.blit(num_obj.surface, (num_obj.x, num_obj.y))
-    
-    def render_holding_item(self, display):
+
+class HoldingItem(ItemCollection):
+    def __init__(self):
+        super().__init__(1)
+
+    def __generate_h_render_vars(self):
+        holding_item_image = none_img if self._collection[0] is None else self._collection[0].img
+        holding_item_number = "" if (self._collection[0] is None or self._collection[0].number == 1) else str(self._collection[0].number)
+        return holding_item_image, holding_item_number
+
+    def render(self, display):
         h_image, h_number = self.__generate_h_render_vars()
 
         x, y = pygame.mouse.get_pos()
-        if self.holding_item is not None:
+        if self._collection[0] is not None:
             display.blit(h_image, (x, y))
             display.blit(Fonts.MinecraftFont(25).render(h_number, False, (255, 255, 255)), (x + 52, y + 52))
-            if self.holding_item.enchantments is not None:
-                display.blit(TC_GLINTS[self.holding_item.name], (x, y))
-            if self.holding_item.durability is not None:
-                RenderDurabilityBar(display, x, y, self.holding_item.durability, self.holding_item.max_durability)      
+            if self._collection[0].enchantments is not None:
+                display.blit(TC_GLINTS[self._collection[0].name], (x, y))
+            if self._collection[0].durability is not None:
+                RenderDurabilityBar(display, x, y, self._collection[0].durability, self._collection[0].max_durability) 
 
 #Player Class and Methods
 class Player:
@@ -2142,6 +2153,7 @@ class Player:
         backdrop = pygame.Rect((30, 592), (697, 30))  # Set Background for Hunger and Health Bar
 
         self.inventory = Inventory()
+        self.holding_item = HoldingItem()
         self.armour_list = [None, None, None, None]
         self.armour_image_list = []
         self.layer_list = []
@@ -2948,7 +2960,7 @@ class Player:
         display.blit(experience_number, experience_number_r)  # Experience Number
 
         # render hotbar
-        self.hotbar.render(display, self.inventory.inventory_list)
+        self.hotbar.render(display, self.inventory.collection)
 
         # RENDER DEBUG MENU
         global screen_width, screen_height
@@ -3798,6 +3810,7 @@ def title_screen():
 def RemoveItem():
     global player
     player.inventory.remove_null_items()
+    player.holding_item.remove_null_items()
     all_lists = [player.enchanting_list, player.craft_list,
                  player.grid_list, player.smelting_list, player.compressor_list, player.grindstone_list]
     for i in all_lists:
